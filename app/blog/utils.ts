@@ -88,3 +88,5 @@ export function formatDate(date: string, includeRelative = false) {
 
   return `${fullDate} (${formattedDate})`
 }
+
+// Removed cn function, moved to lib/utils.ts

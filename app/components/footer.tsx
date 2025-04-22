@@ -1,3 +1,6 @@
+import { CyclingAvatar } from './CyclingAvatar';
+import { ArrowUp } from 'lucide-react';
+
 function ArrowIcon() {
   return (
     <svg
@@ -53,9 +56,23 @@ export default function Footer() {
           </a>
         </li>
       </ul>
-      <p className="mt-8 text-neutral-600 dark:text-neutral-300">
-        © {new Date().getFullYear()} MIT Licensed
-      </p>
+      <div className="mt-8 flex items-center gap-2 text-sm">
+        <CyclingAvatar className="w-5 h-5" />
+        <p className="text-foreground text-sm">
+          obukofejoe.xyz
+        </p>
+        <p className="text-neutral-600 dark:text-neutral-300">
+          © {new Date().getFullYear()} MIT Licensed
+        </p>
+        <a 
+          href="#" 
+          className="ml-auto p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          title="Back to top"
+          aria-label="Back to top"
+        >
+          <ArrowUp className="h-5 w-5 text-foreground" />
+        </a>
+      </div>
     </footer>
   )
 }
