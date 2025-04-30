@@ -14,7 +14,7 @@ export function HeroSection() {
   return (
     <div className="flex flex-col items-start mb-0">
       <CyclingAvatar className="w-20 h-20" />
-      <h1 className={`text-3xl tracking-tighter font-satoshi font-semibold mt-6`}>
+      <h1 className={`text-3xl tracking-tighter font-borna font-semibold mt-6`}>
         Hi there! 👋🏼
       </h1>
     </div>

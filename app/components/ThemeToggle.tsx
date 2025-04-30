@@ -20,7 +20,7 @@ export function ThemeToggle() {
 
   return (
     <motion.button
-      className="fixed top-4 right-4 p-2 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+      className="flex items-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

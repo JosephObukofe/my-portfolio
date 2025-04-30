@@ -6,11 +6,12 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Footer } from '@/app/components/ui/footer'
 import { baseUrl } from './sitemap'
 import { ThemeProvider } from 'next-themes'
-import { ThemeToggle } from '@/app/components/ui/theme-toggle'
 import { PageTransition } from './components/PageTransition'
 import { CyclingAvatar } from './components/CyclingAvatar'
 import { Github, Linkedin, Twitter } from 'lucide-react'
 import { Header } from '@/app/components/Header'
+import DigitalTime from '@/app/components/DigitalTime'
+import Link from 'next/link'
 
 // Configure Space Grotesk
 const spaceGrotesk = localFont({
@@ -46,30 +47,14 @@ const satoshi = localFont({
   // weight: '100 900' 
 })
 
-// Define props for the new Footer component
-const footerProps = {
-  logo: <CyclingAvatar className="w-8 h-8" />,
-  brandName: "",
-  socialLinks: [],
-  mainLinks: [],
-  legalLinks: [],
-  copyright: {
-    text: (
-      <>
-        Designed & Built by{" "}
-        <a 
-          href="https://twitter.com/jojochuu" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="underline hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors"
-        >
-          Obukofe Joseph
-        </a>
-        {" ❤️"}
-      </>
-    )
-  }
-};
+// Configure Borna
+const borna = localFont({
+  src: './fonts/borna-medium-webfont.woff2',
+  variable: '--font-borna',
+  display: 'swap',
+  weight: '500', // Assuming medium maps to 500
+  style: 'normal',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -112,25 +97,53 @@ export default function RootLayout({
       className={cx(
         spaceGrotesk.variable,
         jetbrainsMono.variable,
-        satoshi.variable
+        satoshi.variable,
+        borna.variable
       )}
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground">
+        {/* Fixed name and role */}
+        <Link href="/" className="fixed top-8 left-8 z-50 cursor-pointer">
+          <div>
+            <h1 className="text-[1.1rem] font-semibold font-borna">Obukofe Joseph</h1> 
+            <p className="text-[0.90rem] text-muted-foreground">Data Scientist</p>
+          </div>
+        </Link>
+
+        <div className="fixed bottom-8 left-8 z-50">
+          <p className="text-sm text-muted-foreground">
+            Designed & Built by{" "}
+              <a 
+                href="https://twitter.com/jojochuu" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="underline hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors"
+              >
+                Obukofe Joseph
+              </a>
+                {" ❤️"}
+          </p>
+        </div>
+
+        {/* Digital Time - bottom right */}
+        <div className="fixed bottom-8 right-8 z-50">
+          <DigitalTime />
+        </div>
+
         <div className="max-w-2xl mx-4 mt-8 lg:mx-auto">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <main className="flex-auto min-w-0 flex flex-col px-4 md:px-6">
               <Header />
-              <div className="flex-auto min-w-0 flex flex-col">
-                <PageTransition>
+              <PageTransition>
+                <div className="flex-auto min-w-0 flex flex-col">
                   {children}
-                </PageTransition>
-                <Analytics />
-                <SpeedInsights />
-              </div>
+                  <Analytics />
+                  <SpeedInsights />
+                </div>
+              </PageTransition>
             </main>
           </ThemeProvider>
-          <Footer {...footerProps} />
         </div>
       </body>
     </html>

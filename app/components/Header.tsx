@@ -4,7 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Navigation } from '@/app/components/Navigation'; // Assuming correct path
-import { ThemeToggle } from '@/app/components/ui/theme-toggle'; // Import ThemeToggle
+import { ThemeSwitch } from '@/app/components/ui/theme-switch-button'; // Import ThemeToggle
 import Image from 'next/image'; // Add Image import
 import {
   Breadcrumb,
@@ -22,21 +22,31 @@ const navItems = {
   '/learning': { name: 'Learning' },
   '/projects': { name: 'Projects' },
   '/blog': { name: 'Blog' },
+  // Updated name for Learning Materials
+  '/learning/materials': { name: 'Materials' },
+  '/learning/recap': { name: 'Weekly Recap' },
   // Add mappings for blog post slugs if needed, or handle dynamically
 };
+
+interface BreadcrumbItemType {
+  label: React.ReactNode;
+  href: string;
+  isCurrentPage?: boolean;
+}
 
 export function Header() {
   const pathname = usePathname();
   const isHomePage = pathname === '/';
 
-  // Prepare tabs for Navigation component (excluding Home)
+  // Prepare tabs for Navigation component (excluding Home AND sub-pages)
   const navigationTabs = Object.entries(navItems)
-    .filter(([path]) => path !== '/')
+    // Filter out Home ('/') and any paths deeper than one level
+    .filter(([path]) => path !== '/' && path.split('/').filter(Boolean).length === 1)
     .map(([path, { name }]) => ({ id: path, label: name }));
 
   // Prepare items for Breadcrumb component
   const pathSegments = pathname.split('/').filter(Boolean);
-  const breadcrumbItems = [
+  const breadcrumbItems: BreadcrumbItemType[] = [
     // Use CyclingAvatar (small) for Home link
     ...(!isHomePage 
       ? [{
@@ -52,7 +62,8 @@ export function Header() {
               />
             </div>
           ),
-          href: "/" 
+          href: "/",
+          isCurrentPage: false
         }] 
       : []),
   ];
@@ -106,7 +117,9 @@ export function Header() {
         {isHomePage && <Navigation tabs={navigationTabs} />}
       </div>
       {/* Keep consistent margin for toggle */}
-      <ThemeToggle className="mt-1" />
+      <div className="fixed top-8 right-8 z-50">
+          <ThemeSwitch />
+      </div>
     </div>
   );
 } 

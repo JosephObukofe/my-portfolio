@@ -47,6 +47,7 @@ function MagneticSocialLink({
 export default function SocialLinks() {
   // Using previous links, renamed array for clarity
   const socialLinks = [
+    { name: 'Read.cv', url: 'https://read.cv/jojochuu' },
     { name: 'GitHub', url: 'https://github.com/JosephObukofe' },
     { name: 'LinkedIn', url: 'https://www.linkedin.com/in/obukofeuririoghenejoseph/' },
     { name: 'Twitter', url: 'https://twitter.com/jojochuu' }
