@@ -5,7 +5,6 @@ import { BlogPosts } from 'app/components/posts'
 import SocialLinks from './components/SocialLinks'
 import { Icons } from './components/Icons'
 // import { CyclingAvatar } from './components/CyclingAvatar' // Removed, HeroSection handles its own avatar
-import { HeroSection } from '@/app/components/HeroSection'; // Use path alias
 import { Inter } from 'next/font/google'
 import { Hand, Code } from 'lucide-react'; 
 
@@ -22,7 +21,6 @@ export default function Page() {
   return (
     <section className="space-y-12">
       {/* Use the new HeroSection Client Component */}
-      <HeroSection />
 
       {/* About Section */}
       <div className="space-y-4">

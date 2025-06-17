@@ -1,75 +1,61 @@
-import './global.css'
-import type { Metadata } from 'next'
-import localFont from 'next/font/local'
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Footer } from '@/app/components/ui/footer'
-import { baseUrl } from './sitemap'
-import { ThemeProvider } from 'next-themes'
-import { PageTransition } from './components/PageTransition'
-import { CyclingAvatar } from './components/CyclingAvatar'
-import { Github, Linkedin, Twitter } from 'lucide-react'
-import { Header } from '@/app/components/Header'
-import DigitalTime from '@/app/components/DigitalTime'
-import Link from 'next/link'
-
-// Configure Space Grotesk
-const spaceGrotesk = localFont({
-  src: [
-    {
-      path: './fonts/SpaceGrotesk-Regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: './fonts/SpaceGrotesk-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    }
-  ],
-  variable: '--font-space-grotesk',
-  display: 'swap',
-})
-
-// Configure JetBrains Mono
-const jetbrainsMono = localFont({
-  src: './fonts/JetBrainsMono-Regular.woff2',
-  variable: '--font-jetbrains',
-  display: 'swap',
-})
-
-// Configure Satoshi
-const satoshi = localFont({
-  src: './fonts/Satoshi-Variable.woff2',
-  variable: '--font-satoshi',
-  display: 'swap',
-  // Optional: Define specific weights if needed for variable font
-  // weight: '100 900' 
-})
-
-// Configure Borna
-const borna = localFont({
-  src: './fonts/borna-medium-webfont.woff2',
-  variable: '--font-borna',
-  display: 'swap',
-  weight: '500', // Assuming medium maps to 500
-  style: 'normal',
-})
+import "./global.css";
+import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { baseUrl } from "./sitemap";
+import { ThemeProvider } from "next-themes";
+import { PageTransition } from "./components/PageTransition";
+import { CyclingAvatar } from "./components/CyclingAvatar";
+import { Github, Linkedin, Twitter } from "lucide-react";
+import { Header } from "@/app/components/Header";
+import DigitalTime from "@/app/components/DigitalTime";
+import { ThemeToggleDot } from "@/app/components/ui/theme-switch-button";
+import Link from "next/link";
+import { spaceGrotesk, jetbrainsMono, satoshi, borna } from "@/lib/typography";
+import Logo from "@/app/components/Logo";
+import { getButtonClass } from "@/utils/typography";
+import LayoutWrapper from "./components/LayoutWrapper";
+import LayoutShell from "./components/LayoutShell";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: 'Next.js Portfolio Starter',
-    template: '%s | Next.js Portfolio Starter',
+    default: "Obukofe Joseph",
+    template: "%s · Obukofe Joseph",
   },
-  description: 'This is my portfolio.',
+  description: "Minimalist mind, maximalist curiosity.",
+  icons: {
+    icon: "/images/favicon.svg",
+  },
   openGraph: {
-    title: 'My Portfolio',
-    description: 'This is my portfolio.',
+    images: [
+      {
+        url: `Thumbnail.png`,
+        width: 1200,
+        height: 630,
+        alt: "Obukofe Joseph",
+        type: "image/png",
+      },
+    ],
+    title: "Obukofe Joseph",
+    description: "Minimalist mind, maximalist curiosity.",
     url: baseUrl,
-    siteName: 'My Portfolio',
-    locale: 'en_US',
-    type: 'website',
+    siteName: "Obukofe Joseph",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    images: [
+      {
+        url: `Thumbnail.png`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    card: "summary_large_image",
+    title: "Obukofe Joseph",
+    description: "Minimalist mind, maximalist curiosity.",
+    creator: "@obukofejoe",
   },
   robots: {
     index: true,
@@ -77,19 +63,19 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-}
+};
 
-const cx = (...classes) => classes.filter(Boolean).join(' ')
+const cx = (...classes) => classes.filter(Boolean).join(" ");
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html
@@ -103,49 +89,23 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground">
-        {/* Fixed name and role */}
-        <Link href="/" className="fixed top-8 left-8 z-50 cursor-pointer">
-          <div>
-            <h1 className="text-[1.1rem] font-semibold font-borna">Obukofe Joseph</h1> 
-            <p className="text-[0.90rem] text-muted-foreground">Data Scientist</p>
-          </div>
-        </Link>
-
-        <div className="fixed bottom-8 left-8 z-50">
-          <p className="text-sm text-muted-foreground">
-            Designed & Built by{" "}
-              <a 
-                href="https://twitter.com/jojochuu" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="underline hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors"
-              >
-                Obukofe Joseph
-              </a>
-                {" ❤️"}
-          </p>
-        </div>
-
-        {/* Digital Time - bottom right */}
-        <div className="fixed bottom-8 right-8 z-50">
-          <DigitalTime />
-        </div>
-
-        <div className="max-w-2xl mx-4 mt-8 lg:mx-auto">
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <main className="flex-auto min-w-0 flex flex-col px-4 md:px-6">
-              <Header />
-              <PageTransition>
-                <div className="flex-auto min-w-0 flex flex-col">
-                  {children}
-                  <Analytics />
-                  <SpeedInsights />
-                </div>
-              </PageTransition>
-            </main>
-          </ThemeProvider>
-        </div>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <LayoutShell>
+            <div className="max-w-2xl mx-4 mt-8 lg:mx-auto">
+              <main className="flex-auto min-w-0 flex flex-col px-4 md:px-6">
+                <Header />
+                <PageTransition>
+                  <div className="flex-auto min-w-0 flex flex-col">
+                    <LayoutWrapper>{children}</LayoutWrapper>
+                    <Analytics />
+                    <SpeedInsights />
+                  </div>
+                </PageTransition>
+              </main>
+            </div>
+          </LayoutShell>
+        </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

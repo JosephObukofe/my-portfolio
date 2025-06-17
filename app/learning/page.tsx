@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
 // Import custom Icons component
-import { Icons } from '@/app/components/Icons'; 
+import { Icons } from "@/app/components/Icons";
 // Removed Heroicons import
 // import { BookOpenIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link'; // Import Link
-import { cn } from '@/lib/utils'; // Import cn for combining classes
+import Link from "next/link"; // Import Link
+import { cn } from "@/lib/utils"; // Import cn for combining classes
+import { ArrowLink } from "./recap/[slug]/page";
 
 export default function LearningPage() {
   return (
@@ -16,33 +17,27 @@ export default function LearningPage() {
 
       {/* Introduction or Placeholder */}
       <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        Documenting my ongoing learning process, resources, and weekly reflections.
+        A steady record of what I’m learning, the materials and tools I’m using,
+        and thoughts that surface along the way. This whole journey is less
+        about checking boxes and more about enjoying the process — exploring
+        ideas at my own pace and building something meaningful over time.
       </p>
 
       {/* Reverted to ul, removed list-disc, added icons */}
       <div className="font-satoshi text-[0.90rem]">
         <p className="mb-2">
-          <Link 
-            href="/learning/materials"
-            className="relative font-semibold group w-fit"
-          >
+          <ArrowLink href="/learning/materials">
             Learning Materials (Resources, Notes, etc.)
-            <span className="absolute left-0 -bottom-0.5 w-0 h-px bg-current transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+          </ArrowLink>
         </p>
+        <div className="py-1"></div>
         <p>
-          <Link 
-            href="/learning/recap"
-            className="relative font-semibold group w-fit"
-          >
-            Weekly Learning Recap
-            <span className="absolute left-0 -bottom-0.5 w-0 h-px bg-current transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+          <ArrowLink href="/learning/recap">Weekly Learning Recap</ArrowLink>
         </p>
       </div>
 
       {/* You can add more content or components here later */}
-
+      <div className="py-5"></div>
     </section>
   );
-} 
+}
