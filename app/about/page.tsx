@@ -1,380 +1,146 @@
 import React from "react";
 // Import custom Icons component
-import { Icons } from "@/app/components/Icons";
-import { Tilt } from "@/app/components/ui/tilt";
-// Removed Heroicons import
-// import { BookOpenIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
+import {
+  getHeadingClass,
+  getParagraphClass,
+  getSectionClass,
+  getAllowanceClass,
+  getDateClass,
+} from "@/utils/typography";
 import Link from "next/link"; // Import Link
 import { UnderlineLink } from "@/app/components/ui/underline-link";
 import { cn } from "@/lib/utils"; // Import cn for combining classes
 
-const movies = [
-  {
-    title: "Andor",
-    description: "Tony Gilroy",
-    imageUrl: "images/59SVNwLfoMnZPPB6ukW6dlPxAdI.png",
-  },
-  {
-    title: "Havoc",
-    description: "Gareth Evans",
-    imageUrl: "images/bEiJBcwdR4oOTCgstLkqTUja58p.png",
-  },
-  {
-    title: "The Last of Us",
-    description: "Neil Druckmann",
-    imageUrl: "images/dmo6TYuuJgaYinXBPjrgG9mB5od.png",
-  },
-  {
-    title: "The Wild Robot",
-    description: "Peter Brown",
-    imageUrl: "images/9w0Vh9eizfBXrcomiaFWTIPdboo.png",
-  },
-];
-
 export default function AboutPage() {
   return (
-    <section className="space-y-6 mb-32">
-      {/* About Me Paragraphs */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200">
-        About me
-      </h1>
-      <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        I'm a data scientist currently based in Lagos, Nigeria, drawn to the
-        elegance of mathematics and the creative depth of machine learning. My
-        work lives at the intersection of curiosity and structure, transforming
-        raw data into insights that inform, encode and predict.
+    <section
+      className={getSectionClass({
+        includeMarginTop: false,
+        includeMarginBottom: true,
+      })}
+    >
+      <h2 className={getHeadingClass(2)}>About Me: A Monologue</h2>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        I’m Joe (@obukofejoe), a data scientist, gamer and a full-time selective
+        yapper living in Lagos, Nigeria. I’m currently at PremiumTrust Bank as a
+        Data Scientist - Product and doing my masters at the University of
+        Stirling, Scotland.
       </p>
-      <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        By day, I work as a Data Scientist (Product) at{" "}
-        <UnderlineLink href="https://premiumtrustbank.com/">
-          PremiumTrust Bank
-        </UnderlineLink>
-        {", "}
-        where I build data-driven solutions that support innovation in digital
-        finance. At the same time, I'm pursuing a Master's in Big Data and
-        Artificial Intelligence at the{" "}
-        <UnderlineLink href="https://www.stir.ac.uk/">
-          University of Stirling, Scotland
-        </UnderlineLink>
-        —deepening my technical foundation while staying close to the evolving
-        landscape of data science.
+      <h2 className={getHeadingClass(2)}>(Extended)</h2>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        Hi — again.
       </p>
-      <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        Right now, I'm on a learning journey—building intelligent systems that
-        blend recommendation engines, clustering, and real-time inference, while
-        also sharpening my foundation in traditional machine learning for
-        enterprise use cases. I'm exploring the depth of neural networks,
-        mastering the art of taking models into production with MLOps, and
-        documenting my journey through technical writing. Along the way, I'm
-        picking up Rust for its precision, speed, and safety.
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        If there’s one thing that really anchors how I live and learn, it’s a
+        phrase I hold close:
       </p>
-      <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        This portfolio is both a reflection of where I am and a glimpse into
-        where I'm headed. My practice is grounded in constant learning,
-        thoughtful execution, and a belief that data—like art—has the power to
-        transform how we understand the world.
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        Poco a Poco, meaning <i>“Little by Little”</i> in Spanish.
       </p>
-      <div className="py-1"></div>
-
-      {/* My Inspiration Section */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mt-8">
-        My inspiration
-      </h1>
-      <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        Inspiration can come from the most unexpected places—a fleeting moment,
-        a powerful story, or a simple act of kindness. I find myself motivated
-        by the creativity of others, the beauty of nature, and the endless
-        possibilities that technology brings. Every day is an opportunity to
-        learn, grow, and create something meaningful.
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        This alone is my whole damn way of moving through life, and it’s more or
+        less how I intentionally think about growth, and how I learn. It’s also
+        how I choose to build, with intention, in extremely fine granularity and
+        piece by piece, with less noise and more signal.
       </p>
-      <div className="py-1"></div>
-
-      {/* My Hobbies Section */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mt-8">
-        My hobbies
-      </h1>
-      <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        When I'm not working, I love to unwind with a variety of hobbies. I
-        enjoy playing basketball, exploring new music genres, reading
-        thought-provoking books, and experimenting with digital art. I also find
-        joy in cooking, hiking, and discovering hidden gems in the city. These
-        activities help me recharge and inspire my creativity in unexpected
-        ways.
+      <h3 className={getHeadingClass(3)}>
+        I don’t like doing things on the surface.
+      </h3>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        While I’m not repulsed by it, it’s also something I constantly try not
+        to do whenever I get the chance to, and not also because I think depth
+        is always better, but because I simply can’t help but to go there. I get
+        extremely fidgety around things that feel too shallow or half-baked,
+        whether it’s a function, or something as simple as a thought or even
+        something as nuanced as star formation. My way of moving through with it
+        is to comprehensively understand it from the inside out, not out of the
+        need for perfectionism, but because I absolutely care enough to know.
       </p>
-      <div className="py-1"></div>
-
-      {/* Things I Like & Don't Like Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
-        <div>
-          <h2 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mb-2">
-            Things I like
-          </h2>
-          <ul className="space-y-2 font-satoshi text-[0.95rem] mt-2">
-            <li>My personal space</li>
-            <li>Anime</li>
-            <li>Black</li>
-            <li>Colognes with woody base notes</li>
-            <li>The Scandinavian design philosophy</li>
-            <li>Mellow and earthy-tuned afrobeats</li>
-            <li>Sci-fi movies</li>
-            <li>Doc Martens Loafers</li>
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mb-2">
-            Things I don't like
-          </h2>
-          <ul className="space-y-2 font-satoshi text-[0.95rem] mt-2">
-            <li>Coffee</li>
-            <li>Mechanical keyboards</li>
-            <li>Yoghurt</li>
-            <li>Crowds</li>
-            <li>Loud music</li>
-            <li>Loud talkers</li>
-            <li>Driving in Lagos</li>
-            <li>Small talk</li>
-          </ul>
-        </div>
-      </div>
-      <div className="py-1"></div>
-
-      {/* Currently Watching Section */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mt-8">
-        Currently watching
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2">
-        {movies.map((movie, index) => (
-          <div key={index} className="flex items-center">
-            <img
-              src={movie.imageUrl}
-              alt={movie.title}
-              className="w-12 h-18 rounded-lg object-cover mr-3 shadow"
-            />
-            <div>
-              <div className="font-satoshi text-[0.98rem] text-neutral-800 dark:text-neutral-200">
-                {movie.title}
-              </div>
-              <div className="font-satoshi text-s text-neutral-500 dark:text-neutral-400">
-                {movie.description}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="py-1"></div>
-
-      {/* Favorite Artists Section */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mt-8">
-        Favorite artistes
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-4">
-        {/* First column: 5 artists */}
-        <div className="space-y-4">
-          {[
-            {
-              name: "Daniel Caesar",
-              genre: "R&B, Neo-Soul",
-              image: "/images/Daniel Caesar - Artist.jpg",
-            },
-            {
-              name: "The Cavemen.",
-              genre: "Highlife",
-              image: "/images/The Cavemen. - Artist.jpg",
-            },
-            {
-              name: "Cleo Sol",
-              genre: "Soul, R&B",
-              image: "/images/Cleo Sol - Artist.jpg",
-            },
-            {
-              name: "Cruel Santino",
-              genre: "Alté",
-              image: "/images/Cruel Santino - Artist.jpg",
-            },
-            {
-              name: "Juls",
-              genre: "Afrobeat",
-              image: "/images/Juls - Artist.jpg",
-            },
-          ].map((artist, i) => (
-            <a
-              key={i}
-              href={`https://open.spotify.com/search/${encodeURIComponent(
-                artist.name
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center"
-            >
-              <img
-                src={artist.image}
-                alt={artist.name}
-                className="w-12 h-12 rounded-full object-cover mr-3 shadow"
-              />
-              <div>
-                <div className="font-satoshi text-[0.98rem] text-neutral-800 dark:text-neutral-200">
-                  {artist.name}
-                </div>
-                <div className="font-satoshi text-s text-neutral-500 dark:text-neutral-400">
-                  {artist.genre}
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-        {/* Second column: 5 artists */}
-        <div className="space-y-4">
-          {[
-            {
-              name: "Omah Lay",
-              genre: "Afrobeat",
-              image: "/images/Omah Lay - Artist.jpg",
-            },
-            {
-              name: "Tyler the Creator",
-              genre: "Hip-Hop",
-              image: "/images/Tyler, The Creator - Artist.jpg",
-            },
-            {
-              name: "Tay Iwar",
-              genre: "Neo-Soul, R&B",
-              image: "/images/Tay Iwar - Artist.jpg",
-            },
-            {
-              name: "Victony",
-              genre: "Afropop",
-              image: "/images/Victony - Artist.jpg",
-            },
-            {
-              name: "Masego",
-              genre: "Jazz, R&B",
-              image: "/images/Masego - Artist.jpg",
-            },
-          ].map((artist, i) => (
-            <a
-              key={i + 5}
-              href={`https://open.spotify.com/search/${encodeURIComponent(
-                artist.name
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center"
-            >
-              <img
-                src={artist.image}
-                alt={artist.name}
-                className="w-12 h-12 rounded-full object-cover mr-3 shadow"
-              />
-              <div>
-                <div className="font-satoshi text-[0.98rem] text-neutral-800 dark:text-neutral-200">
-                  {artist.name}
-                </div>
-                <div className="font-satoshi text-s text-neutral-500 dark:text-neutral-400">
-                  {artist.genre}
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-      <div className="py-1"></div>
-
-      {/* Recently Played Section */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mt-8">
-        Recently played
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-        {[
-          {
-            title: "Thought I Was Dead",
-            artist: "Tyler the Creator, ScHoolboy Q",
-            image: "/images/Tyler, The Creator - CHROMAKOPIA.jpg",
-          },
-          {
-            title: "Lagos",
-            artist: "Seyi Vibez",
-            image: "/images/Seyi Vibez - Loseyi Professor.jpg",
-          },
-          {
-            title: "OFA",
-            artist: "Oxlade",
-            image: "/images/Oxlade - OFA_ Deluxe Edition.jpg",
-          },
-          {
-            title: "Pier 46",
-            artist: "Victony, KTIZO",
-            image: "/images/Victony - Stubborn.jpg",
-          },
-          {
-            title: "WAKE UP",
-            artist: "Samara Cyn",
-            image: "/images/Samara Cyn - WAKE UP.jpg",
-          },
-          {
-            title: "jazz is for ordinary people",
-            artist: "berlioz",
-            image: "/images/berlioz - jazz is for ordinary people.jpg",
-          },
-          {
-            title: "Dispose of Me",
-            artist: "Omar Apollo",
-            image: "/images/Omar Apollo - Dispose of Me.jpg",
-          },
-          {
-            title: "Reflection Station",
-            artist: "Tay Iwar",
-            image: "/images/Tay Iwar - Reflection Station.jpg",
-          },
-          {
-            title: "BIOTM",
-            artist: "Steven Charlot",
-            image: "/images/Steven Charlot - BIOTM.jpg",
-          },
-          {
-            title: "INRI",
-            artist: "Judeline",
-            image: "/images/Judeline - INRI.jpg",
-          },
-        ].map((song, i) => (
-          <a
-            key={i}
-            href={`https://open.spotify.com/search/${encodeURIComponent(
-              song.title + " " + song.artist
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center"
-          >
-            <img
-              src={song.image}
-              alt={song.title}
-              className="w-12 h-12 rounded-lg object-cover mr-3 shadow"
-            />
-            <div>
-              <div className="font-satoshi text-[0.98rem] text-neutral-800 dark:text-neutral-200">
-                {song.title}
-              </div>
-              <div className="font-satoshi text-s text-neutral-500 dark:text-neutral-400">
-                {song.artist}
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-      <div className="py-1"></div>
-
-      {/* Bucket List Section */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200 mt-8">
-        Stuff I plan to do
-      </h1>
-      <ul className="space-y-2 font-satoshi text-[0.95rem] mt-2">
-        <li className="line-through text-red-600">Scream at Asake's concert</li>
-        <li className="line-through text-red-600">Jump out of a plane</li>
-        <li>Travel to Japan for a year without working</li>
-        <li>Have a white Christmas</li>
-        <li>See the northern lights in Finland</li>
-      </ul>
-      <div className="py-5"></div>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        But there’s a part of me I’m learning to embrace, and it is that depth
+        doesn’t mean overdoing, but rather being intentional, honest, and
+        possibly structured when it makes sense, and maybe a tad understandably
+        chaotic if it doesn’t.
+      </p>
+      <h3 className={getHeadingClass(3)}>
+        The internet feels like noise these days.
+      </h3>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        It’s crowded and overstimulating, and everyone’s always either
+        optimizing, scaling, or shipping stuff and it gets hard to breathe
+        sometimes, harder to focus if even. Don’t even get me started on the
+        doomscrolling, but the really weird (and maybe relatable) thing about it
+        is that I love being deep in the chaos. There’s something oddly
+        reassuring about carving your own personal corner of the internet that
+        feels “you”, with zero pressure and all-in presence.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        This site – it’s precisely that for me. A slow, zero-pressure archive
+        that’s all part me, a log of everything and anything I deeply care
+        about, put together with mini-batches of hard-earned clarity. I built
+        this because I needed a place where I could come back and remember how
+        much I’ve grown, and not just that I simply did.
+      </p>
+      <h3 className={getHeadingClass(3)}>
+        Most of what I do now is self-guided.
+      </h3>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        I make my own roadmaps, decide what to learn, and worry less about the
+        “what for”. I would definitely be meticulous, but not always methodical
+        about it. Although I try, I firmly believe in wandering sometimes too.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        I think structure can be a double-edged sword, helpful yes, but also
+        stifling. Most times, my best learning journeys didn’t come from perfect
+        plans but from getting completely lost in something I didn’t fully
+        understand, but still following it anyways. That’s why I came up with a
+        term for it – “messy inquisitiveness”, and I think it’s my very own
+        superpower.
+      </p>
+      <h3 className={getHeadingClass(3)}>
+        I strongly believe obsession beats discipline{" "}
+      </h3>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        I know, it’s not a popular take in the era of hustle and productivity
+        culture, but for me, obsession isn’t always about burnout, but the joy
+        that comes with it. I’ve done some of my best work not because I was
+        told to, but mainly because I couldn’t not do it.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        That’s why I’ll always choose learning what truly excites me over what’s
+        trendy. It’s not exactly discipline but something much deeper.
+      </p>
+      <h3 className={getHeadingClass(3)}>
+        I’m not trying to be meticulously perfect.
+      </h3>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        I’m just trying to pay attention, mainly to the way I work, the way I
+        learn and think. I try not to get caught up in optimizing for speed or
+        following the trend train, but to stay in love with the process I chose.
+      </p>
+      <h3 className={getHeadingClass(3)}>
+        I see myself as a collector of sorts.
+      </h3>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        Not of things in the material sense, but of stuff I find either
+        intriguing or compelling. It could be a brutalist building, an
+        engineering marvel or a well designed fit.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        That’s what Catalog is for, and it’s my personal living archive of
+        beautiful, odd, and meaningful stuff. You would probably learn a little
+        more about me on there.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        So if you’ve landed here, maybe you’re wired a little like me too, and
+        you can relate to building large stuff with mini intentional steps.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        Thanks for stopping by.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        Joe.
+      </p>
     </section>
   );
 }

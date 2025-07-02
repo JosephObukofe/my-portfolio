@@ -1,13 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { useTheme } from "next-themes";
 
 interface ThemeToggleDotProps {
   className?: string;
 }
 
 export function ThemeToggleDot({ className = "" }: ThemeToggleDotProps) {
-  const [theme, setTheme] = React.useState<"light" | "dark" | null>(null);
+  const { theme, setTheme } = useTheme();
 
   React.useEffect(() => {
     const savedTheme =
@@ -25,7 +26,6 @@ export function ThemeToggleDot({ className = "" }: ThemeToggleDotProps) {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
   }, [theme]);
 
   return (

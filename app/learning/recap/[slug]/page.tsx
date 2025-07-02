@@ -8,7 +8,17 @@ import {
   getInlineCodeClass,
   getSectionClass,
   getAllowanceClass,
+  getChartTextClass,
 } from "@/utils/typography";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/app/components/ui/table";
 import { notFound } from "next/navigation";
 import React from "react";
 import "katex/dist/katex.min.css";
@@ -19,6 +29,157 @@ import { UnderlineLink } from "@/app/components/ui/underline-link";
 import { CodeBlock, CodeBlockCode } from "@/app/components/ui/code-block";
 import { useTheme } from "next-themes";
 import { styles } from "@/lib/typography";
+import { BarPlotChart } from "@/app/components/ui/barplot";
+import { HorizontalBarPlotChart } from "@/app/components/ui/horizontalbarplot";
+import { LinePlotChart } from "@/app/components/ui/lineplot";
+import { AreaPlotChart } from "@/app/components/ui/areaplot";
+import { MultiLinePlotChart } from "@/app/components/ui/multilineplot";
+import { StackedBarPlotChart } from "@/app/components/ui/stackedbarplot";
+
+const data = [
+  { week: "Week 1", hours: 12 },
+  { week: "Week 2", hours: 9 },
+  { week: "Week 3", hours: 15 },
+  { week: "Week 4", hours: 7 },
+];
+
+const lineChartData = [
+  { month: "Jan", users: 120 },
+  { month: "Feb", users: 200 },
+  { month: "Mar", users: 150 },
+  { month: "Apr", users: 250 },
+  { month: "May", users: 300 },
+  { month: "Jun", users: 280 },
+  { month: "Jul", users: 350 },
+  { month: "Aug", users: 420 },
+  { month: "Sep", users: 390 },
+  { month: "Oct", users: 450 },
+  { month: "Nov", users: 480 },
+  { month: "Dec", users: 500 },
+];
+
+const multiLineChartData = [
+  {
+    date: "Jan",
+    series1: 40,
+    series2: 32,
+    series3: 18,
+    series4: 50,
+    series5: 28,
+    series6: 60,
+  },
+  {
+    date: "Feb",
+    series1: 55,
+    series2: 45,
+    series3: 23,
+    series4: 48,
+    series5: 32,
+    series6: 58,
+  },
+  {
+    date: "Mar",
+    series1: 48,
+    series2: 38,
+    series3: 35,
+    series4: 52,
+    series5: 40,
+    series6: 61,
+  },
+  {
+    date: "Apr",
+    series1: 60,
+    series2: 52,
+    series3: 40,
+    series4: 55,
+    series5: 43,
+    series6: 65,
+  },
+  {
+    date: "May",
+    series1: 70,
+    series2: 65,
+    series3: 45,
+    series4: 62,
+    series5: 49,
+    series6: 72,
+  },
+  {
+    date: "Jun",
+    series1: 68,
+    series2: 58,
+    series3: 50,
+    series4: 70,
+    series5: 51,
+    series6: 80,
+  },
+  {
+    date: "Jul",
+    series1: 75,
+    series2: 60,
+    series3: 48,
+    series4: 78,
+    series5: 55,
+    series6: 85,
+  },
+  {
+    date: "Aug",
+    series1: 80,
+    series2: 67,
+    series3: 52,
+    series4: 82,
+    series5: 60,
+    series6: 90,
+  },
+];
+
+const yKeys = [
+  "series1",
+  "series2",
+  "series3",
+  "series4",
+  "series5",
+  "series6",
+];
+
+const stackedBarData = [
+  {
+    month: "Jan",
+    productA: 40,
+    productB: 24,
+    productC: 18,
+  },
+  {
+    month: "Feb",
+    productA: 35,
+    productB: 28,
+    productC: 22,
+  },
+  {
+    month: "Mar",
+    productA: 50,
+    productB: 20,
+    productC: 30,
+  },
+  {
+    month: "Apr",
+    productA: 45,
+    productB: 32,
+    productC: 26,
+  },
+  {
+    month: "May",
+    productA: 60,
+    productB: 34,
+    productC: 29,
+  },
+  {
+    month: "Jun",
+    productA: 55,
+    productB: 27,
+    productC: 33,
+  },
+];
 
 export function ArrowLink({
   children,
@@ -55,6 +216,89 @@ export function ArrowLink({
     </a>
   );
 }
+
+const items = [
+  {
+    id: "1",
+    name: "Alex Thompson",
+    email: "alex.t@company.com",
+    location: "San Francisco, US",
+    status: "Active",
+    balance: "$1,250.00",
+  },
+  {
+    id: "2",
+    name: "Sarah Chen",
+    email: "sarah.c@company.com",
+    location: "Singapore",
+    status: "Active",
+    balance: "$600.00",
+  },
+  {
+    id: "3",
+    name: "James Wilson",
+    email: "j.wilson@company.com",
+    location: "London, UK",
+    status: "Inactive",
+    balance: "$650.00",
+  },
+  {
+    id: "4",
+    name: "Maria Garcia",
+    email: "m.garcia@company.com",
+    location: "Madrid, Spain",
+    status: "Active",
+    balance: "$0.00",
+  },
+  {
+    id: "5",
+    name: "David Kim",
+    email: "d.kim@company.com",
+    location: "Seoul, KR",
+    status: "Active",
+    balance: "-$1,000.00",
+  },
+];
+
+function Component() {
+  return (
+    <div className="bg-background">
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Location</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="text-right">Balance</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell className="font-medium">{item.name}</TableCell>
+              <TableCell>{item.email}</TableCell>
+              <TableCell>{item.location}</TableCell>
+              <TableCell>{item.status}</TableCell>
+              <TableCell className="text-right">{item.balance}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter className="bg-transparent">
+          <TableRow className="hover:bg-transparent">
+            <TableCell colSpan={4}>Total</TableCell>
+            <TableCell className="text-right">$2,500.00</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+      <p className="mt-4 text-center text-sm text-muted-foreground">
+        Basic table
+      </p>
+    </div>
+  );
+}
+
+export { Component };
 
 export default function RecapPage({ params }: { params: { slug: string } }) {
   const { resolvedTheme } = useTheme();
@@ -2510,7 +2754,7 @@ export default function RecapPage({ params }: { params: { slug: string } }) {
         <>
           <section
             className={getSectionClass({
-              includeMarginTop: true,
+              includeMarginTop: false,
               includeMarginBottom: true,
             })}
           >
@@ -3429,6 +3673,36 @@ export default function RecapPage({ params }: { params: { slug: string } }) {
             >
               ...
             </p>
+            <div>
+              <Component />
+            </div>
+
+            <div>
+              <BarPlotChart data={data} xKey="week" yKey="hours" />
+            </div>
+            <div>
+              <HorizontalBarPlotChart data={data} xKey="week" yKey="hours" />
+            </div>
+            <div>
+              <StackedBarPlotChart
+                data={stackedBarData}
+                xKey="month"
+                yKeys={["productA", "productB", "productC"]}
+              />
+            </div>
+            <div>
+              <LinePlotChart data={lineChartData} xKey="month" yKey="users" />
+            </div>
+            <div>
+              <AreaPlotChart data={lineChartData} xKey="month" yKey="users" />
+            </div>
+            <div>
+              <MultiLinePlotChart
+                data={multiLineChartData}
+                xKey="date"
+                yKeys={yKeys}
+              />
+            </div>
 
             <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
               This week you learned about:

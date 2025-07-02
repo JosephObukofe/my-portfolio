@@ -1,43 +1,57 @@
 import React from "react";
-// Import custom Icons component
-import { Icons } from "@/app/components/Icons";
-// Removed Heroicons import
-// import { BookOpenIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
-import Link from "next/link"; // Import Link
-import { cn } from "@/lib/utils"; // Import cn for combining classes
-import { ArrowLink } from "./recap/[slug]/page";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { UnderlineLink } from "@/app/components/ui/underline-link";
+import {
+  getHeadingClass,
+  getParagraphClass,
+  getSectionClass,
+  getAllowanceClass,
+  getDateClass,
+} from "@/utils/typography";
 
 export default function LearningPage() {
   return (
-    <section className="space-y-6">
-      {/* Page Heading */}
-      <h1 className="text-[1.1rem] font-semibold font-borna text-neutral-800 dark:text-neutral-200">
-        My Learning Journey
-      </h1>
-
-      {/* Introduction or Placeholder */}
-      <p className="font-satoshi text-[0.90rem] text-neutral-800 dark:text-neutral-200">
-        A steady record of what I’m learning, the materials and tools I’m using,
-        and thoughts that surface along the way. This whole journey is less
-        about checking boxes and more about enjoying the process — exploring
-        ideas at my own pace and building something meaningful over time.
+    <section
+      className={getSectionClass({
+        includeMarginTop: false,
+        includeMarginBottom: true,
+      })}
+    >
+      <h2 className={getHeadingClass(2)}>
+        <UnderlineLink href="/learning/materials">
+          Learning Materials
+        </UnderlineLink>
+      </h2>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        I’ve always had this terrible habit of hoarding resource links that I
+        feel would be important, all because I might need them someday. There’s
+        this subtle anxiety behind it, that if I let it go, I’d miss out on
+        something important. Instead of hoarding, I’m learning to intentionally
+        curate based on what I want to learn at any given time and by how much
+        (depth).
       </p>
-
-      {/* Reverted to ul, removed list-disc, added icons */}
-      <div className="font-satoshi text-[0.90rem]">
-        <p className="mb-2">
-          <ArrowLink href="/learning/materials">
-            Learning Materials (Resources, Notes, etc.)
-          </ArrowLink>
-        </p>
-        <div className="py-1"></div>
-        <p>
-          <ArrowLink href="/learning/recap">Weekly Learning Recap</ArrowLink>
-        </p>
-      </div>
-
-      {/* You can add more content or components here later */}
-      <div className="py-5"></div>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        I believe that focusing on depth, especially in the fundamentals of
+        anything you want to learn, helps to clear out the noise and gives you a
+        bit of added confidence. Painfully slower, yes, but it sticks. In my
+        case, I use this section as a central repo for any resource that sticks
+        around long enough to be useful more than once.
+      </p>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        If you’re a learner like me — obsessive and possibly chaotically
+        unstructured — then maybe this section would help you too.
+      </p>
+      <h2 className={getHeadingClass(2)}>
+        <UnderlineLink href="/learning/recap">Weekly Recaps</UnderlineLink>
+      </h2>
+      <p className={getParagraphClass({ responsive: true, muted: true })}>
+        These are my mini blog-style retrospectives, and I use them to reflect
+        on what I explored, and particularly where I got stuck. This section, in
+        many ways, is more or less what this entire site really is, which is a
+        weekly-logged reflection of my learning journey. It also helps me pause
+        and track how far I’ve come.
+      </p>
     </section>
   );
 }

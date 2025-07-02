@@ -313,8 +313,8 @@ const recap: RecapModule = {
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           We are solely focused on{" "}
           <InlineMath math="P(\text{data} \mid \theta)" /> which is a measure of
-          how likely the data is under a given <InlineMath math="\theta" />.
-          This is also known as the <b>likelihood</b>.{" "}
+          how likely the data is under a given <InlineMath math="\theta" />, and
+          this is also known as the <b>likelihood</b>.{" "}
           <InlineMath math="P(\theta)" /> is known as the <b>prior</b>, which is
           a measure of what we believe about <InlineMath math="\theta" /> before
           seeing the data (kind of like winging it), and{" "}

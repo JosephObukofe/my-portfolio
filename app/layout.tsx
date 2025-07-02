@@ -93,7 +93,6 @@ export default function RootLayout({
           <LayoutShell>
             <div className="max-w-2xl mx-4 mt-8 lg:mx-auto">
               <main className="flex-auto min-w-0 flex flex-col px-4 md:px-6">
-                <Header />
                 <PageTransition>
                   <div className="flex-auto min-w-0 flex flex-col">
                     <LayoutWrapper>{children}</LayoutWrapper>

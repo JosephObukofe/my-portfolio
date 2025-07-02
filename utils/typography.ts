@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import { base, typography, jetbrainsMono } from "../lib/typography";
+import { useTheme } from "next-themes";
+import { base, typography, jetbrainsMono, alignment } from "../lib/typography";
 
 type Breakpoints = "base" | "sm" | "md" | "lg" | "xl";
 
@@ -190,4 +191,127 @@ export function getDateClass(options?: {
     options?.muted ? base.color.muted : base.color.default,
     options?.responsive && [...applyResponsive(typography.paragraph.fontSize)]
   );
+}
+
+export function getTableCellClass() {
+  return clsx(
+    typography.paragraph.fontSize.base,
+    ...applyResponsive(typography.paragraph.fontSize)
+  );
+}
+
+export function getTableCellPaddingClass() {
+  return clsx(
+    typography.tableCellPadding.base,
+    ...applyResponsive(typography.tableCellPadding)
+  );
+}
+
+export function getTableHeadClass() {
+  return clsx(
+    base.font.grotesk,
+    typography.paragraph.fontSize.base,
+    ...applyResponsive(typography.paragraph.fontSize)
+  );
+}
+
+export function getTableCaptionClass() {
+  return clsx(
+    base.font.grotesk,
+    base.color.muted,
+    typography.paragraph.fontSize.base,
+    ...applyResponsive(typography.paragraph.fontSize)
+  );
+}
+
+export function getTableCellMathClass() {
+  return clsx(...applyResponsive(typography.tableCellMath.fontSize));
+}
+
+export function getAlignmentClass(options?: {
+  text?: keyof typeof alignment.text;
+  vertical?: keyof typeof alignment.vertical;
+}) {
+  return clsx(
+    options?.text && alignment.text[options.text],
+    options?.vertical && alignment.vertical[options.vertical]
+  );
+}
+
+export function getChartTextClass() {
+  return clsx(base.font.grotesk, base.color.muted, typography.chart.base);
+}
+
+export function getTooltipClass() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  const baseClasses = clsx(typography.tooltip.base);
+
+  const style = {
+    backgroundColor: isDark
+      ? typography.tooltip.dark.bg
+      : typography.tooltip.light.bg,
+    color: isDark
+      ? typography.tooltip.dark.color
+      : typography.tooltip.light.color,
+    border: isDark
+      ? typography.tooltip.dark.border
+      : typography.tooltip.light.border,
+    backdropFilter: typography.tooltip.backdrop,
+    WebkitBackdropFilter: typography.tooltip.backdrop,
+  };
+
+  return { className: baseClasses, style };
+}
+
+export function getBarChartLabelClass() {
+  return clsx(base.font.grotesk, typography.chart.base);
+}
+
+export function getStackedBarPlotInnerStacks<
+  T extends Record<string, number | string>
+>(
+  data: T[],
+  stackKeys: string[],
+  gapValue: number = 2
+): Array<T & Record<string, number>> {
+  return data.map((item) => {
+    const spacedItem: Record<string, any> = { ...item };
+
+    stackKeys.forEach((key, idx) => {
+      if (idx !== stackKeys.length - 1) {
+        const gapKey = `__gap__${key}`;
+        spacedItem[gapKey] = gapValue;
+      }
+    });
+
+    return spacedItem as T & Record<string, number>;
+  });
+}
+
+export function getGapKeys(stackKeys: string[]): string[] {
+  return stackKeys.slice(0, -1).map((key) => `__gap__${key}`);
+}
+
+export function getNormalizedDeltaStacks(
+  data: any[],
+  baselineKey: string,
+  deltaKey: string
+) {
+  return data.map((d) => ({
+    model: d.model,
+    baseline: d[baselineKey],
+    increase: d[deltaKey] > 0 ? d[deltaKey] : 0,
+    decrease: d[deltaKey] < 0 ? Math.abs(d[deltaKey]) : 0,
+  }));
+}
+
+export function convertToPercentageStack(data: any[]): any[] {
+  return data.map((d) => ({
+    ...d,
+    baseline: d.baseline * 100,
+    increase: d.increase * 100,
+    decrease: d.decrease * 100,
+  }));
 }

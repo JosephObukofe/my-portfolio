@@ -150,6 +150,63 @@ export const typography = {
     bgColor: "bg-gray-100 dark:bg-gray-900",
     rounded: "rounded-md",
   },
+  tableCellMath: {
+    fontSize: {
+      base: "text-[0.75rem]",
+      sm: "sm:text-[0.80rem]",
+      md: "md:text-[0.85rem]",
+      lg: "lg:text-[0.90rem]",
+      xl: "xl:text-[0.95rem]",
+    },
+  },
+  tableCellPadding: {
+    base: "p-3",
+    sm: "sm:p-[0.8rem]",
+    md: "md:p-[0.85rem]",
+    lg: "lg:p-[0.9rem]",
+    xl: "xl:p-[0.95rem]",
+  },
+  tableHead: {
+    height: "h-12",
+    padding: {
+      base: "px-3",
+      sm: "sm:px-[0.8rem]",
+      md: "md:px-[0.85rem]",
+      lg: "lg:px-[0.9rem]",
+      xl: "xl:px-[0.95rem]",
+    },
+    font: `${base.weight.medium} ${base.color.muted}`,
+  },
+  chart: {
+    base: "text-[0.75rem]",
+  },
+  tooltip: {
+    base: "px-3 py-1 rounded-full text-[0.75rem] transition-all duration-200",
+    light: {
+      bg: "#fefff8",
+      color: "#0f172a",
+      border: "1px solid #cccccc",
+    },
+    dark: {
+      bg: "#ffffff1a",
+      color: "#ffffff",
+      border: "1px solid #ffffff33",
+    },
+    backdrop: "blur(6px)",
+  },
+};
+
+export const alignment = {
+  text: {
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+  },
+  vertical: {
+    top: "align-top",
+    middle: "align-middle",
+    bottom: "align-bottom",
+  },
 };
 
 export const toggle = {
