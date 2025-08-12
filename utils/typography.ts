@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useTheme } from "next-themes";
 import { base, typography, jetbrainsMono, alignment } from "../lib/typography";
 
-type Breakpoints = "base" | "sm" | "md" | "lg" | "xl";
+type Breakpoints = "base" | "sm";
 
 function applyResponsive(
   obj: Partial<Record<Breakpoints, string | undefined>>
@@ -22,19 +22,15 @@ export function getHeadingClass(
   }
 ) {
   const heading = typography.headings[`h${level}` as "h1" | "h2" | "h3"];
+
   return clsx(
     base.font.grotesk,
     base.weight.semibold,
-    heading.base,
-    heading.spacing,
     options?.customColor ?? base.color.default,
-    options?.responsive &&
-      applyResponsive({
-        sm: heading.sm,
-        md: heading.md,
-        lg: heading.lg,
-        xl: heading.xl,
-      })
+    options?.responsive && [
+      ...applyResponsive(heading.fontSize),
+      ...applyResponsive(heading.leading),
+    ]
   );
 }
 
@@ -45,8 +41,6 @@ export function getParagraphClass(options?: {
   return clsx(
     base.font.satoshi,
     typography.paragraph.fontWeight,
-    typography.paragraph.fontSize.base,
-    typography.paragraph.leading.base,
     options?.muted ? base.color.muted : base.color.default,
     options?.responsive && [
       ...applyResponsive(typography.paragraph.fontSize),
@@ -67,15 +61,7 @@ export function getSectionClass(options?: {
 }
 
 export function getDividerClass() {
-  return clsx(
-    typography.divider.base,
-    ...applyResponsive({
-      sm: typography.divider.sm,
-      md: typography.divider.md,
-      lg: typography.divider.lg,
-      xl: typography.divider.xl,
-    })
-  );
+  return clsx(...applyResponsive(typography.divider));
 }
 
 type ListOptions = {
@@ -132,10 +118,13 @@ export function getInlineCodeClass() {
   );
 }
 
-export function getButtonClass(options?: { muted?: boolean; bold?: boolean }) {
+export function getButtonClass(options?: {
+  muted?: boolean;
+  bold?: boolean;
+  font?: "grotesk" | "satoshi";
+}) {
   return clsx(
-    base.font.grotesk,
-    typography.paragraph.fontSize.base,
+    options?.font === "satoshi" ? base.font.satoshi : base.font.grotesk,
     options?.muted ? base.color.muted : base.color.default,
     options?.bold ? base.weight.semibold : base.weight.medium,
     ...applyResponsive(typography.paragraph.fontSize)
@@ -145,23 +134,41 @@ export function getButtonClass(options?: { muted?: boolean; bold?: boolean }) {
 export function getAllowanceClass({
   axis = "py",
 }: { axis?: "py" | "pt" | "pb" | "my" | "mt" | "mb" } = {}) {
-  const values = {
-    base: `${axis}-5`,
-    sm: `${axis}-5`,
-    md: `${axis}-5.2`,
-    lg: `${axis}-5.4`,
-    xl: `${axis}-5.6`,
-  };
-
   return clsx(
-    values.base,
     ...applyResponsive({
-      sm: values.sm,
-      md: values.md,
-      lg: values.lg,
-      xl: values.xl,
+      base: `${axis}-4`,
+      sm: `${axis}-5`,
     })
   );
+}
+
+export function getPageAllowanceClass({
+  axis = "py",
+}: { axis?: "py" | "pt" | "pb" | "my" | "mt" | "mb" } = {}) {
+  return clsx(
+    ...applyResponsive({
+      base: `${axis}-2`,
+      sm: `${axis}-3`,
+    })
+  );
+}
+
+export function getChartAllowanceClass() {
+  const values = {
+    base: "py-2",
+    sm: "py-2",
+  };
+
+  return clsx(...applyResponsive(values));
+}
+
+export function getTableAllowanceClass() {
+  const values = {
+    base: "py-2",
+    sm: "py-2",
+  };
+
+  return clsx(...applyResponsive(values));
 }
 
 export function getDigitalClockClass(options?: {
@@ -171,8 +178,6 @@ export function getDigitalClockClass(options?: {
   return clsx(
     base.font.grotesk,
     typography.paragraph.fontWeight,
-    typography.paragraph.fontSize.base,
-    typography.paragraph.leading.base,
     options?.muted ? base.color.muted : base.color.default,
     options?.responsive && [
       ...applyResponsive(typography.paragraph.fontSize),
@@ -187,30 +192,22 @@ export function getDateClass(options?: {
 }) {
   return clsx(
     base.font.grotesk,
-    typography.paragraph.fontSize.base,
     options?.muted ? base.color.muted : base.color.default,
     options?.responsive && [...applyResponsive(typography.paragraph.fontSize)]
   );
 }
 
 export function getTableCellClass() {
-  return clsx(
-    typography.paragraph.fontSize.base,
-    ...applyResponsive(typography.paragraph.fontSize)
-  );
+  return clsx(...applyResponsive(typography.paragraph.fontSize));
 }
 
 export function getTableCellPaddingClass() {
-  return clsx(
-    typography.tableCellPadding.base,
-    ...applyResponsive(typography.tableCellPadding)
-  );
+  return clsx(...applyResponsive(typography.tableCellPadding));
 }
 
 export function getTableHeadClass() {
   return clsx(
-    base.font.grotesk,
-    typography.paragraph.fontSize.base,
+    base.font.satoshi,
     ...applyResponsive(typography.paragraph.fontSize)
   );
 }
@@ -219,13 +216,8 @@ export function getTableCaptionClass() {
   return clsx(
     base.font.grotesk,
     base.color.muted,
-    typography.paragraph.fontSize.base,
     ...applyResponsive(typography.paragraph.fontSize)
   );
-}
-
-export function getTableCellMathClass() {
-  return clsx(...applyResponsive(typography.tableCellMath.fontSize));
 }
 
 export function getAlignmentClass(options?: {
@@ -239,13 +231,32 @@ export function getAlignmentClass(options?: {
 }
 
 export function getChartTextClass() {
-  return clsx(base.font.grotesk, base.color.muted, typography.chart.base);
+  return clsx(
+    base.font.grotesk,
+    base.color.muted,
+    ...applyResponsive(typography.chart.fontSize),
+    ...applyResponsive(typography.chart.leading)
+  );
+}
+
+export function getTextClass(options?: {
+  muted?: boolean;
+  responsive?: boolean;
+}) {
+  return clsx(
+    base.font.grotesk,
+    options?.muted ? base.color.muted : base.color.default,
+    options?.responsive && [...applyResponsive(typography.paragraph.fontSize)]
+  );
+}
+
+export function getWeekInfoClass() {
+  return clsx(...applyResponsive(typography.weekInfo));
 }
 
 export function getTooltipClass() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-
   const baseClasses = clsx(typography.tooltip.base);
 
   const style = {
@@ -265,8 +276,16 @@ export function getTooltipClass() {
   return { className: baseClasses, style };
 }
 
+export function getTooltipTextClass(options?: { muted?: boolean }) {
+  return clsx(
+    base.font.grotesk,
+    ...applyResponsive(typography.chart.fontSize),
+    options?.muted ? base.color.muted : base.color.default
+  );
+}
+
 export function getBarChartLabelClass() {
-  return clsx(base.font.grotesk, typography.chart.base);
+  return clsx(base.font.grotesk, ...applyResponsive(typography.chart.fontSize));
 }
 
 export function getStackedBarPlotInnerStacks<

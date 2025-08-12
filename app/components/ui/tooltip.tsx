@@ -2,33 +2,25 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getTooltipClass } from "@/utils/typography";
+import { getTooltipClass, getTooltipTextClass } from "@/utils/typography";
 
 interface TooltipProps {
   active?: boolean;
-  label?: string | number;
   payload?: any[];
-  showLabel?: boolean;
   formatter?: (value: any) => string;
-  coordinate?: { x: number; y: number }; // from Recharts
+  coordinate?: { x: number; y: number };
+  suffix?: string;
 }
 
 export function Tooltip({
   active,
   payload,
-  label,
-  showLabel = false,
   formatter,
   coordinate,
+  suffix,
 }: TooltipProps) {
   const { className, style } = getTooltipClass();
-
   const shouldRender = active && payload && payload.length > 0;
-  const value =
-    shouldRender && formatter
-      ? formatter(payload[0].value)
-      : payload?.[0]?.value;
-
   const [pos, setPos] = React.useState({ x: 0, y: 0 });
 
   React.useEffect(() => {
@@ -39,20 +31,16 @@ export function Tooltip({
 
   if (!shouldRender || !coordinate) return null;
 
+  const currentValue = payload[0]?.value;
+  const formattedValue = formatter ? formatter(currentValue) : currentValue;
+  const displayValue = `${formattedValue}${suffix ? ` ${suffix}` : ""}`;
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key="tooltip-wrapper"
-        initial={{
-          opacity: 0,
-          x: coordinate.x,
-          y: coordinate.y,
-        }}
-        animate={{
-          opacity: 1,
-          x: pos.x,
-          y: pos.y,
-        }}
+        initial={{ opacity: 0, x: coordinate.x, y: coordinate.y }}
+        animate={{ opacity: 1, x: pos.x, y: pos.y }}
         exit={{ opacity: 0 }}
         transition={{
           x: { type: "spring", stiffness: 150, damping: 25 },
@@ -66,11 +54,20 @@ export function Tooltip({
           zIndex: 10,
         }}
       >
-        <div className={className} style={style}>
-          {showLabel && label && (
-            <span className="mr-2 opacity-70">{label}</span>
-          )}
-          <span>{value}</span>
+        <div
+          className={`${className} ${getTooltipTextClass()}`}
+          style={{
+            ...style,
+            padding: "0.25rem 0.75rem",
+            borderRadius: "9999px", // full pill shape
+            backgroundColor: style?.backgroundColor ?? "#1f2937", // fallback if your utility doesn't apply
+            minWidth: "fit-content",
+            textAlign: "center",
+            fontWeight: 500,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {displayValue}
         </div>
       </motion.div>
     </AnimatePresence>

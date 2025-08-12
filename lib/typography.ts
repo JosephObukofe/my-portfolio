@@ -1,6 +1,5 @@
 import localFont from "next/font/local";
 
-// Font configurations
 export const spaceGrotesk = localFont({
   src: [
     {
@@ -38,7 +37,6 @@ export const borna = localFont({
   style: "normal",
 });
 
-// Base styles
 export const base = {
   font: {
     satoshi: "font-satoshi",
@@ -68,120 +66,104 @@ export const base = {
 export const typography = {
   paragraph: {
     fontSize: {
-      base: "text-[0.85rem]",
-      sm: "sm:text-[0.90rem]",
-      md: "md:text-[0.95rem]",
-      lg: "lg:text-[1rem]",
-      xl: "xl:text-[1.05rem]",
+      base: "text-[0.75rem]",
+      sm: "text-[0.85rem]",
     },
     fontWeight: "font-medium",
     leading: {
       base: "leading-[1.66]",
-      sm: "sm:leading-[1.66]",
-      md: "md:leading-[1.66]",
-      lg: "lg:leading-[1.67]",
-      xl: "xl:leading-[1.68]",
+      sm: "leading-[1.66]",
     },
   },
   headings: {
     h1: {
-      base: "text-[0.95rem]",
-      sm: "sm:text-[1.05rem]",
-      md: "md:text-[1.10rem]",
-      lg: "lg:text-[1.15rem]",
-      xl: "xl:text-[1.20rem]",
-      spacing: "mt-6 mb-2",
+      fontSize: {
+        base: "text-[0.95rem]",
+        sm: "text-[1.05rem]",
+      },
+      leading: {
+        base: "leading-[1.3]",
+        sm: "leading-[1.3]",
+      },
     },
     h2: {
-      base: "text-[0.90rem]",
-      sm: "sm:text-[1rem]",
-      md: "md:text-[1.05rem]",
-      lg: "lg:text-[1.10rem]",
-      xl: "xl:text-[1.15rem]",
-      spacing: "mt-6 mb-2",
+      fontSize: {
+        base: "text-[0.85rem]",
+        sm: "text-[0.95rem]",
+      },
+      leading: {
+        base: "leading-[1.3]",
+        sm: "leading-[1.3]",
+      },
     },
     h3: {
-      base: "text-[0.85rem]",
-      sm: "sm:text-[0.95rem]",
-      md: "md:text-[1rem]",
-      lg: "lg:text-[1.05rem]",
-      xl: "xl:text-[1.10rem]",
-      spacing: "mt-6 mb-2",
+      fontSize: {
+        base: "text-[0.75rem]",
+        sm: "text-[0.85rem]",
+      },
+      leading: {
+        base: "leading-[1.3]",
+        sm: "leading-[1.3]",
+      },
     },
   },
   section: {
-    gap: "space-y-5 sm:space-y-6 md:space-y-7 lg:space-y-8 xl:space-y-9",
-    marginBottom: "mb-30 sm:mb-32 md:mb-34 lg:mb-36 xl:mb-38",
-    marginTop: "mt-20 sm:mt-22 md:mt-24 lg:mt-26 xl:mt-28",
+    gap: "space-y-5 sm:space-y-6",
+    marginBottom: "mb-30 sm:mb-32",
+    marginTop: "mt-20 sm:mt-22",
   },
   divider: {
     base: "my-5",
-    sm: "sm:my-6",
-    md: "md:my-7",
-    lg: "lg:my-8",
-    xl: "xl:my-9",
+    sm: "my-6",
   },
   spacing: {
     allowance: {
-      base: "py-5",
+      base: "py-4",
       sm: "py-5",
-      md: "py-5.2",
-      lg: "py-5.4",
-      xl: "py-5.6",
     },
   },
   inlineCode: {
     fontSize: {
-      base: "text-[0.75rem]",
-      sm: "sm:text-[0.80rem]",
-      md: "md:text-[0.85rem]",
-      lg: "lg:text-[0.90rem]",
-      xl: "xl:text-[0.95rem]",
+      base: "text-[0.65rem]",
+      sm: "text-[0.70rem]",
     },
     padding: {
       base: "px-2 py-0.15",
-      sm: "sm:px-[2rem] sm:py-[0.15rem]",
-      md: "md:px-[2rem] md:py-[0.175rem]",
-      lg: "lg:px-[2.25rem] lg:py-[0.2rem]",
-      xl: "xl:px-[2.25rem] xl:py-[0.225rem]",
+      sm: "px-[2rem] py-[0.15rem]",
     },
     border: "border border-gray-200 dark:border-gray-700",
     color: "text-red-600 dark:text-red-400",
-    bgColor: "bg-gray-100 dark:bg-gray-900",
+    bgColor: "bg-gray-100 dark:bg-gray-900", // Here, I wanted the background color to be the same as the foreground but we'd correct this later. For now let's focus on responsiveness
     rounded: "rounded-md",
-  },
-  tableCellMath: {
-    fontSize: {
-      base: "text-[0.75rem]",
-      sm: "sm:text-[0.80rem]",
-      md: "md:text-[0.85rem]",
-      lg: "lg:text-[0.90rem]",
-      xl: "xl:text-[0.95rem]",
-    },
   },
   tableCellPadding: {
     base: "p-3",
-    sm: "sm:p-[0.8rem]",
-    md: "md:p-[0.85rem]",
-    lg: "lg:p-[0.9rem]",
-    xl: "xl:p-[0.95rem]",
+    sm: "p-[1rem]",
   },
   tableHead: {
     height: "h-12",
     padding: {
       base: "px-3",
-      sm: "sm:px-[0.8rem]",
-      md: "md:px-[0.85rem]",
-      lg: "lg:px-[0.9rem]",
-      xl: "xl:px-[0.95rem]",
+      sm: "px-[1rem]",
     },
     font: `${base.weight.medium} ${base.color.muted}`,
   },
   chart: {
-    base: "text-[0.75rem]",
+    fontSize: {
+      base: "text-[0.65rem]",
+      sm: "text-[0.75rem]",
+    },
+    leading: {
+      base: "leading-[1.5]",
+      sm: "leading-[1.5]",
+    },
+  },
+  weekInfo: {
+    base: "grid grid-cols-[120px_1fr] gap-x-6 gap-y-6 max-w-xl mb-6",
+    sm: "grid-cols-[120px_1fr] gap-x-7 gap-y-7 max-w-xl mb-7",
   },
   tooltip: {
-    base: "px-3 py-1 rounded-full text-[0.75rem] transition-all duration-200",
+    base: "px-3 py-1 rounded-full text-[0.65rem] transition-all duration-200",
     light: {
       bg: "#fefff8",
       color: "#0f172a",
@@ -192,7 +174,7 @@ export const typography = {
       color: "#ffffff",
       border: "1px solid #ffffff33",
     },
-    backdrop: "blur(6px)",
+    backdrop: "blur(4px)",
   },
 };
 
@@ -214,36 +196,21 @@ export const toggle = {
     themeToggleDot: {
       base: "h-6 w-6",
       sm: "h-6 w-6",
-      md: "h-7 w-7",
-      lg: "h-8 w-8",
-      xl: "h-9 w-9",
     },
     themeToggleDotInner: {
       base: "h-3 w-3",
       sm: "h-3 w-3",
-      md: "h-3.5 w-3.5",
-      lg: "h-4 w-4",
-      xl: "h-4.5 w-4.5",
     },
   },
 };
 
-// Combined styles with colors and spacing
 export const styles = {
-  // Headings (using typography.headings + base.font.grotesk + base.weight.semibold)
-  h1: `${base.font.grotesk} ${typography.headings.h1.base} ${base.weight.semibold} ${base.color.default} ${typography.headings.h1.spacing}`,
-  h2: `${base.font.grotesk} ${typography.headings.h2.base} ${base.weight.semibold} ${base.color.default} ${typography.headings.h2.spacing}`,
-  h3: `${base.font.grotesk} ${typography.headings.h3.base} ${base.weight.semibold} ${base.color.default} ${typography.headings.h3.spacing}`,
-
-  // Paragraphs (using typography.paragraph + base.font.satoshi)
   body: `${base.font.satoshi} ${typography.paragraph.fontSize.base} ${typography.paragraph.fontWeight} ${typography.paragraph.leading.base} ${base.color.default}`,
   bodyMuted: `${base.font.satoshi} ${typography.paragraph.fontSize.base} ${typography.paragraph.fontWeight} ${typography.paragraph.leading.base} ${base.color.muted}`,
 
-  // Lists (same font + size as paragraph for consistency)
   list: `${base.font.satoshi} ${typography.paragraph.fontSize.base} ${typography.paragraph.fontWeight} ${base.color.default} ${base.spacing.list} list-disc pl-6`,
   listMuted: `${base.font.satoshi} ${typography.paragraph.fontSize.base} ${typography.paragraph.fontWeight} ${base.color.muted} ${base.spacing.list} list-disc pl-6`,
 
-  // Buttons (still use grotesk font + sm size + weight)
   button: `${base.font.grotesk} ${base.size.sm} ${base.weight.medium} tracking-tight ${base.color.default}`,
   buttonMuted: `${base.font.grotesk} ${base.size.sm} ${base.weight.medium} tracking-tight ${base.color.muted}`,
 } as const;

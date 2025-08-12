@@ -14,7 +14,7 @@ export function UnderlineLink({
 }) {
   const isExternal = href.startsWith("http");
 
-  const linkClasses = `relative inline-block font-semibold w-fit group ${className}`;
+  const linkClasses = `relative inline-block w-fit group ${className}`;
 
   const underline = (
     <>

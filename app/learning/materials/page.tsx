@@ -1,7 +1,5 @@
 import React from "react";
 import { InlineCode } from "@/app/components/ui/inline-code";
-import { CodeBlock } from "@/app/components/ui/code-block";
-import { ArrowLink } from "../recap/[slug]/page";
 import { UnderlineLink } from "@/app/components/ui/underline-link";
 
 export default function MaterialsPage() {

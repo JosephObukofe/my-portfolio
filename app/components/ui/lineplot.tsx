@@ -55,7 +55,7 @@ export function LinePlotChart({
   const dynamicStrokeColor = strokeColor ?? (isDark ? "#ffffff" : "#0f172a");
 
   return (
-    <div ref={ref} className="w-full max-w-3xl mx-auto" style={{ height }}>
+    <div ref={ref} className="w-full max-w-3xl mx-auto h-[250px] sm:h-[500px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} key={chartKey}>
           <XAxis
@@ -74,7 +74,7 @@ export function LinePlotChart({
           />
 
           <Tooltip
-            content={<CustomTooltip showLabel={false} />}
+            content={<CustomTooltip />}
             cursor={{
               stroke: dynamicStrokeColor,
               strokeWidth: 0.5,

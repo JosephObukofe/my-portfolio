@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
 
@@ -12,9 +12,25 @@ export default function Logo({ className }: { className?: string }) {
   const jRef = useRef<SVGPathElement | null>(null);
   const oRef = useRef<SVGPathElement | null>(null);
   const blinkTl = useRef<gsap.core.Tween | null>(null);
+  const [supportsHover, setSupportsHover] = useState(false);
 
   const originalDotPath =
     "M19.8347 15.6C19.8347 14.544 20.6747 13.728 21.7067 13.728C22.7387 13.728 23.5787 14.544 23.5787 15.6C23.5787 16.656 22.7387 17.472 21.7067 17.472C20.6747 17.472 19.8347 16.656 19.8347 15.6Z";
+
+  // ✅ DETECT HOVER CAPABILITY
+  useEffect(() => {
+    // Check if device supports hover (desktop/laptop with mouse)
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    setSupportsHover(mediaQuery.matches);
+
+    // Listen for changes (e.g., external mouse connected to tablet)
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSupportsHover(e.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -23,48 +39,62 @@ export default function Logo({ className }: { className?: string }) {
     };
   }, []);
 
-  const handleMouseEnter = () => {
-    if (!dotRef.current || !underscoreRef.current) return;
-    gsap.killTweensOf(dotRef.current);
-    gsap.to(dotRef.current, {
-      duration: 0.3,
-      morphSVG: underscoreRef.current,
-      ease: "power2.inOut",
-      onComplete: () => {
-        blinkTl.current = gsap.to(dotRef.current!, {
-          opacity: 0,
-          duration: 0.6,
-          repeat: -1,
-          yoyo: true,
-          ease: "steps(1)",
+  // ✅ ONLY CREATE HOVER HANDLERS IF DEVICE SUPPORTS HOVER
+  const handleMouseEnter = supportsHover
+    ? () => {
+        if (!dotRef.current || !underscoreRef.current) return;
+        gsap.killTweensOf(dotRef.current);
+        gsap.to(dotRef.current, {
+          duration: 0.3,
+          morphSVG: underscoreRef.current,
+          ease: "power2.inOut",
+          onComplete: () => {
+            blinkTl.current = gsap.to(dotRef.current!, {
+              opacity: 0,
+              duration: 0.6,
+              repeat: -1,
+              yoyo: true,
+              ease: "steps(1)",
+            });
+          },
         });
-      },
-    });
-  };
+      }
+    : undefined;
 
-  const handleMouseLeave = () => {
-    if (!dotRef.current) return;
-    blinkTl.current?.kill();
-    blinkTl.current = null;
-    gsap.killTweensOf(dotRef.current);
-    gsap.set(dotRef.current, { opacity: 1 });
-    gsap.to(dotRef.current, {
-      duration: 0.3,
-      morphSVG: originalDotPath,
-      ease: "power2.inOut",
-    });
-  };
+  const handleMouseLeave = supportsHover
+    ? () => {
+        if (!dotRef.current) return;
+        blinkTl.current?.kill();
+        blinkTl.current = null;
+        gsap.killTweensOf(dotRef.current);
+        gsap.set(dotRef.current, { opacity: 1 });
+        gsap.to(dotRef.current, {
+          duration: 0.3,
+          morphSVG: originalDotPath,
+          ease: "power2.inOut",
+        });
+      }
+    : undefined;
 
   return (
     <svg
-      width="38"
-      height="22"
       viewBox="0 0 38 22"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={className}
+      className={`
+        w-7 h-auto sm:w-8 md:w-9 lg:w-10
+        ${className || ""}
+      `.trim()}
+      style={{
+        cursor: supportsHover ? "pointer" : "default",
+        // ✅ Remove mobile tap highlight effects
+        WebkitTapHighlightColor: "transparent",
+        WebkitUserSelect: "none",
+        userSelect: "none",
+        touchAction: "manipulation",
+      }}
     >
       <g id="Group 1">
         <path

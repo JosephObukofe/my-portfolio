@@ -7,7 +7,7 @@ import {
   getParagraphClass,
   getSectionClass,
   getAllowanceClass,
-  getDateClass,
+  getPageAllowanceClass,
 } from "@/utils/typography";
 
 export default function LearningPage() {
@@ -15,14 +15,15 @@ export default function LearningPage() {
     <section
       className={getSectionClass({
         includeMarginTop: false,
-        includeMarginBottom: true,
+        includeMarginBottom: false,
       })}
     >
-      <h2 className={getHeadingClass(2)}>
+      <div className={getPageAllowanceClass({ axis: "py" })}></div>
+      <h3 className={getHeadingClass(3, { responsive: true })}>
         <UnderlineLink href="/learning/materials">
           Learning Materials
         </UnderlineLink>
-      </h2>
+      </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         I’ve always had this terrible habit of hoarding resource links that I
         feel would be important, all because I might need them someday. There’s
@@ -42,9 +43,10 @@ export default function LearningPage() {
         If you’re a learner like me — obsessive and possibly chaotically
         unstructured — then maybe this section would help you too.
       </p>
-      <h2 className={getHeadingClass(2)}>
+      <div className={getPageAllowanceClass({ axis: "py" })}></div>
+      <h3 className={getHeadingClass(3, { responsive: true })}>
         <UnderlineLink href="/learning/recap">Weekly Recaps</UnderlineLink>
-      </h2>
+      </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         These are my mini blog-style retrospectives, and I use them to reflect
         on what I explored, and particularly where I got stuck. This section, in
