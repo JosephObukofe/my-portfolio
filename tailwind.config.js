@@ -6,6 +6,8 @@ module.exports = {
     "./app/components/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
+    "leading-[1.95]",
+
     "space-y-5",
     "sm:space-y-6",
     "md:space-y-7",
@@ -25,6 +27,11 @@ module.exports = {
     "xl:mt-28",
 
     "text-[0.75rem]",
+    "text-[0.80rem]",
+    "text-[0.85rem]",
+    "text-[0.90rem]",
+    "text-[0.95rem]",
+    "text-[1.05rem]",
     "sm:text-[0.80rem]",
     "md:text-[0.85rem]",
     "lg:text-[0.90rem]",
@@ -152,6 +159,7 @@ module.exports = {
         mono: ["var(--font-jetbrains)", "monospace"],
         satoshi: ["var(--font-satoshi)", "sans-serif"],
         borna: ["var(--font-borna)", "sans-serif"],
+        laBelleAurore: ["var(--font-labelle-aurore)", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {

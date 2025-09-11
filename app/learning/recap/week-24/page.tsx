@@ -13,8 +13,8 @@ const recap: RecapModule = {
     weekNumber: 24,
     title: "Week 24",
     date: "2025-06-15",
-    description: "...",
-    focusAreas: ["General"],
+    description: "Feature Redundancy",
+    focusAreas: ["ML"],
     status: "Ongoing",
     thumbnail: "/public/images/thumbnails/24.png",
     resources: [
@@ -42,8 +42,8 @@ const recap: RecapModule = {
           week={24}
           date="Jun 9 – Jun 15"
           status="Ongoing"
-          description="..."
-          focusAreas={["..."]}
+          description="Feature Redundancy"
+          focusAreas={["ML"]}
           resources={[
             { label: "...", url: "https://dvc.org/doc" },
             { label: "...", url: "https://doc.rust-lang.org/book/" },

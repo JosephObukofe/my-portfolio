@@ -15,7 +15,7 @@ const Table = React.forwardRef<
   <div className="relative w-full overflow-auto">
     <table
       ref={ref}
-      className={cn("w-full min-w-max mx-auto", className)}
+      className={cn("min-w-max mx-auto", className)}
       {...props}
     />
   </div>
@@ -77,6 +77,7 @@ const TableHead = React.forwardRef<
       getTableCellPaddingClass(),
       getTableHeadClass(),
       getAlignmentClass({ text: "left", vertical: "middle" }),
+      "font-medium text-muted-foreground",
       className
     )}
     {...props}

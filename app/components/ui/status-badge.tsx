@@ -57,7 +57,7 @@ export function StatusBadge({ status }: { status: StatusType }) {
   // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <span className="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-0.5 rounded-full text-[0.65rem] sm:text-[0.725rem] font-grotesk text-neutral-800 dark:text-neutral-200 bg-gray-100 dark:bg-gray-800">
+      <span className="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-0.5 rounded-full text-[0.65rem] sm:text-[0.725rem] font-satoshi text-neutral-800 dark:text-neutral-200 bg-gray-100 dark:bg-gray-800">
         <span className="inline-block rounded-full w-[0.3rem] h-[0.3rem] sm:w-[0.5rem] sm:h-[0.5rem] bg-gray-400" />
         <span>{status}</span>
       </span>
@@ -71,7 +71,7 @@ export function StatusBadge({ status }: { status: StatusType }) {
 
   return (
     <span
-      className="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-0.5 rounded-full text-[0.75rem] sm:text-[0.85rem] font-grotesk text-neutral-800 dark:text-neutral-200 transition-colors duration-200"
+      className="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-0.5 rounded-full text-[0.75rem] sm:text-[0.85rem] font-satoshi text-neutral-800 dark:text-neutral-200 transition-colors duration-200"
       style={{
         backgroundColor: backgroundColor,
       }}

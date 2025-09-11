@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 150" fill="none">
+  <!-- Joe in La Belle Aurore -->
+  <text x="20" y="80" font-family="'La Belle Aurore', cursive" font-size="64" fill="black">
+    Joe
+  </text>
+  
+  <!-- Flourish underline -->
+  <path d="M25 95 C 100 140, 280 140, 360 95" 
+        stroke="black" stroke-width="2" fill="none" />
+</svg>

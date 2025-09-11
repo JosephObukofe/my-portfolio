@@ -37,10 +37,17 @@ export const borna = localFont({
   style: "normal",
 });
 
+export const laBelleAurore = localFont({
+  src: "../app/fonts/LaBelleAurore.woff2",
+  variable: "--font-labelle-aurore",
+  display: "swap",
+});
+
 export const base = {
   font: {
     satoshi: "font-satoshi",
     grotesk: "font-grotesk",
+    laBelleAurore: "font-laBelleAurore",
   },
   size: {
     base: "text-[0.95rem]",
@@ -71,8 +78,8 @@ export const typography = {
     },
     fontWeight: "font-medium",
     leading: {
-      base: "leading-[1.66]",
-      sm: "leading-[1.66]",
+      base: "leading-[1.95]",
+      sm: "leading-[1.95]",
     },
   },
   headings: {
@@ -175,6 +182,12 @@ export const typography = {
       border: "1px solid #ffffff33",
     },
     backdrop: "blur(4px)",
+  },
+  signature: {
+    fontSize: {
+      base: "text-2xl",
+      sm: "text-3xl",
+    },
   },
 };
 

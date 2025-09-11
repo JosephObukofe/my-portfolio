@@ -32,6 +32,7 @@ import { BarPlotChart } from "@/app/components/ui/barplot";
 import { HorizontalBarPlotChart } from "@/app/components/ui/horizontalbarplot";
 import { LinePlotChart } from "@/app/components/ui/lineplot";
 import { AreaPlotChart } from "@/app/components/ui/areaplot";
+import { RadarPlotChart } from "@/app/components/ui/radarplot";
 import { MultiLinePlotChart } from "@/app/components/ui/multilineplot";
 import { StackedVerticalBarChart } from "@/app/components/ui/stackedbarplot";
 import { StackedHorizontalBarChart } from "@/app/components/ui/horizontalstackedbarplot";
@@ -67,6 +68,19 @@ const samplesPerDimension = [
   { class: "Class 7", samples: 17.78 },
   { class: "Class 8", samples: 11.11 },
   { class: "Class 9", samples: 6.67 },
+];
+
+const samplesPerCluster = [
+  { class: "Class 0", samples: 13750 },
+  { class: "Class 1", samples: 4500 },
+  { class: "Class 2", samples: 3000 },
+  { class: "Class 3", samples: 1750 },
+  { class: "Class 4", samples: 1000 },
+  { class: "Class 5", samples: 500 },
+  { class: "Class 6", samples: 300 },
+  { class: "Class 7", samples: 200 },
+  { class: "Class 8", samples: 125 },
+  { class: "Class 9", samples: 75 },
 ];
 
 const linearClassifierParams = [
@@ -634,6 +648,17 @@ const salesTrendData = [
   { month: "Jun", revenue: 67000 },
 ];
 
+const productFeaturesData = [
+  { feature: "Performance", rating: 9.2 },
+  { feature: "Usability", rating: 8.7 },
+  { feature: "Security", rating: 9.5 },
+  { feature: "Scalability", rating: 8.1 },
+  { feature: "Cost Efficiency", rating: 7.3 },
+  { feature: "Support Quality", rating: 8.9 },
+  { feature: "Integration", rating: 7.8 },
+  { feature: "Documentation", rating: 6.5 },
+];
+
 function TableComponent() {
   return (
     <div className="bg-background">
@@ -870,22 +895,10 @@ const recap: RecapModule = {
     weekNumber: 22,
     title: "Week 22",
     date: "2025-07-09",
-    description: "Model Calibration",
+    description: "Calibration Experimentation",
     focusAreas: ["ML"],
     status: "Completed",
-    thumbnail: "/images/recaps/week-1-thumb.png",
-    resources: [
-      {
-        label: "Airflow DAG Concepts",
-        type: "Blog",
-        url: "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html",
-      },
-      {
-        label: "Mini-batch Training Overview",
-        type: "Video",
-        url: "https://www.youtube.com/watch?v=xyz",
-      },
-    ],
+    thumbnail: "/images/thumbnails/22.png",
   },
   content: () => (
     <>
@@ -900,11 +913,25 @@ const recap: RecapModule = {
           week={22}
           date="May 19 – May 25"
           status="Completed"
-          description=" Model Calibration"
+          description="Calibration Experimentation"
           focusAreas={["ML"]}
           resources={[
-            { label: "Introduction to DVC", url: "https://dvc.org/doc" },
-            { label: "Rust Book", url: "https://doc.rust-lang.org/book/" },
+            {
+              label: "Imbalanced Data Classification",
+              url: "https://www.sciencedirect.com/science/article/abs/pii/S0950705120307607",
+            },
+            {
+              label: "A Unifying View of Class Overlap",
+              url: "https://www.sciencedirect.com/science/article/abs/pii/S1566253522001099",
+            },
+            {
+              label: "Probability Calibration",
+              url: "https://scikit-learn.org/stable/modules/calibration.html",
+            },
+            {
+              label: "Imbalanced-Learn Documentation",
+              url: "https://imbalanced-learn.org/stable/",
+            },
           ]}
         />
         <div className={getAllowanceClass()}></div>
@@ -962,9 +989,15 @@ const recap: RecapModule = {
         </div>
         <div className={getAllowanceClass({ axis: "py" })}></div>
         <div className="flex items-center justify-center">
-          <AreaPlotChart data={salesTrendData} xKey="month" yKey="revenue" />
+          <AreaPlotChart
+            data={salesTrendData}
+            xKey="month"
+            yKey="revenue"
+            suffix=""
+            metricName="Revenue"
+          />
         </div>
-
+        <div className={getAllowanceClass({ axis: "py" })}></div>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           This week, I’ve been stress-testing both probabilistic and
           non-probabilistic classifiers to find the “most likely” scenarios
@@ -991,11 +1024,11 @@ const recap: RecapModule = {
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h1 className={getHeadingClass(1, { responsive: true })}>
+        <h1 className={getHeadingClass(1, { responsive: true, muted: true })}>
           Synthetic Data Generation: Parameter Breakdown and Complexity Factors
         </h1>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
-          Our synthetics dataset was engineered using
+          Our synthetics dataset was engineered using{" "}
           <InlineCode>sklearn.datasets.make_classification</InlineCode> to
           create a controlled stress test environment that systematically
           introduces multiple interacting complexity factors based on the
@@ -1029,13 +1062,13 @@ const recap: RecapModule = {
           Next, we introduced multi-class complexity beyond binary
           classification tasks using <InlineCode>n_classes=10</InlineCode>. The
           complexity factor in this case is the Multi-Class Exponential
-          Complexity, and in much practical terms, it creates{" "}
-          <InlineMath math={"45"} /> pairwise decision boundaries{" "}
-          <InlineMath math={"10"} /> choose <InlineMath math={"2"} />, which
-          must all be learned simultaneously. The main pain point here is that
-          each binary sub-problem would inherit the full complexity of other
-          qualities of the synthetic dataset, which would be highlighted in the
-          following sections.
+          Complexity, and in more practical terms, it creates{" "}
+          <InlineMath math={"45"} /> pairwise decision boundaries (
+          <InlineMath math={"10"} /> choose <InlineMath math={"2"} />
+          ), which must all be learned simultaneously. The main pain point here
+          is that each binary sub-problem would inherit the full complexity of
+          other qualities of the synthetic dataset, which would be highlighted
+          in the following sections.
         </p>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           We then initialized explicit class weights that directly creates the
@@ -1097,26 +1130,25 @@ const recap: RecapModule = {
         </div>
         <div className={getAllowanceClass({ axis: "py" })}></div>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
-          For context, the number of samples per dimension was computed by …
-        </p>
-        <p className={getParagraphClass({ responsive: true, muted: false })}>
-          Noticeably, Class 0 has <InlineMath math={"1,222"} /> samples per
-          dimension which is well supported, but moving on to the minority
-          classes, the number of samples per dimension drastically drops which
-          leads to a severely under-sampled scenario. This further means that in
-          the 45D space, the minority classes forms isolated points and
-          generalization in such a high dimension is close to impossible.
+          Noticeably, Class <InlineMath math={"0"} /> has{" "}
+          <InlineMath math={"1,222"} /> samples per dimension which is well
+          supported, but moving on to the minority classes, the number of
+          samples per dimension drastically drops which leads to a severely
+          under-sampled scenario. This further means that in the 45D space, the
+          minority classes forms isolated points and generalization in such a
+          high dimension is close to impossible.
         </p>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           Next, we defined the actual signal features that carry the
           class-discriminative information by using{" "}
           <InlineCode>n_informative=15</InlineCode>. The complexity factor is
           the Signal-to-Noise Ratio where only about <InlineMath math={"33%"} />{" "}
-          <InlineMath math={"(15/45)"} /> contain genuine class information. The
-          impact of class imbalance in this case is that majority classes can
-          easily fair well and rely on statistical dominance to find true
-          signals, but it’s much more difficult for the minority classes,
-          especially with limited samples, features and true signals features.
+          features <InlineMath math={"(15/45)"} /> contain genuine class
+          information. The impact of class imbalance in this case is that
+          majority classes easily fair well and rely on statistical dominance to
+          find true signals, but it’s much more difficult for the minority
+          classes, especially with limited samples, features and true signal
+          features.
         </p>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           We also created correlated features that add noise without new
@@ -1129,7 +1161,7 @@ const recap: RecapModule = {
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           To further test redundancy handling, we introduced exact feature
           duplicates by using <InlineCode>n_repeated=8</InlineCode>, and about{" "}
-          <InlineMath math={"51%"} /> of the feature space
+          <InlineMath math={"51\\%"} /> of the feature space{" "}
           <InlineMath math={"(23/45)"} /> contains no new information. The need
           for this design choice was to especially test for overfitting
           potentials.
@@ -1138,28 +1170,297 @@ const recap: RecapModule = {
           As a whole, these parameters form the design of the feature space and
           its associated complexity factors.
         </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The <InlineCode>n_clusters_per_class=4</InlineCode> setting creates a
+          multi-model distribution within each class, thereby forming
+          intra-class clusters. As a complexity factor, it exponentially blows
+          up a <InlineMath math={"10"} />
+          -class problem into a <InlineMath math={"10 \\times 4 = 40"} /> one (a{" "}
+          <InlineMath math={"40"} /> sub-cluster learning challenge). For
+          example, given that Class <InlineMath math={"0"} /> has{" "}
+          <InlineMath math={"55,000"} /> total samples, the number of samples
+          per intra-class <InlineMath math={"0"} /> cluster would then be{" "}
+          <InlineMath math={"13,750 \\ (55,000 / 4)"} />. Other class clusters
+          can be visualized using the plot below:
+        </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h1 className={getHeadingClass(1, { responsive: true })}>
-          Adopting a Calibration-First Strategy
-        </h1>
+        <p
+          className={`${getTextClass({
+            responsive: true,
+            muted: true,
+          })} text-center`}
+        >
+          Plot of Number of Samples per Cluster per Class
+        </p>
+        <div className={getChartAllowanceClass()}></div>
+        <div className="flex items-center justify-center">
+          <HorizontalBarPlotChart
+            data={samplesPerCluster}
+            xKey="class"
+            yKey="samples"
+          />
+        </div>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h1 className={getHeadingClass(1, { responsive: true })}>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The main complexity this design choice brings is the fact that for the
+          most dominant minority class, we get approximately{" "}
+          <InlineMath math={"75"} /> samples per cluster, and as a general rule
+          of thumb, <InlineMath math={"50-200"} /> samples are required per
+          cluster for stable pattern recognition. While this seems like a close
+          call, the samples are a jumbled up mix of redundant, repeated and
+          informative features, so there’s a whole lot of redundancy with a slim
+          chance of finding the true signal, coupled with the fact that the
+          classifier has to make a single choice out of{" "}
+          <InlineMath math={"10"} /> possible outcomes.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          To create overlapping decision boundaries, the{" "}
+          <InlineCode>class_sep=0.4</InlineCode> was implemented. This design
+          forces classes to share the same feature space regions with each
+          other, thereby leading to significant class overlap as highlighted as
+          a complexity factor. According to research, class overlap can be more
+          harmful than class imbalance, as minority class samples are trapped in
+          overlapped regions, thereby making them virtually unreachable and
+          unlearnable, given the fact that they are surrounded by majority class
+          examples.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          These parameters form the inter-class relationship parameters.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Label contamination was also introduced by using{" "}
+          <InlineCode>flip_y=0.02</InlineCode>. For more context, label noise
+          (also known as annotation noise), is when the label (target) in a
+          dataset is incorrect or inconsistent with the true class/value.
+          Focusing on the minority class, at first glance, it might not really
+          seem as much as only <InlineMath math={"2\\%"} /> of{" "}
+          <InlineMath math={"300"} /> total samples are mislabeled, but recall
+          that we are dealing with a multi-model distribution per class, so each
+          cluster which contains a mix of noisy and true signals could be
+          potentially wrangled. The demerits of this is that ground truth could
+          be ultimately corrupted, thereby leading to unreliable estimates and
+          classifier miscalibrations.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          This alone forms the data quality parameter design.
+        </p>
+        <div className={getAllowanceClass({ axis: "py" })}></div>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
+          The Multiplicative Interaction Complexity Challenge
+        </h2>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          To reiterate, the complexity factors are:
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          <ul
+            className={getListClass({
+              responsive: true,
+              padded: true,
+              muted: false,
+            })}
+          >
+            <li>Multi-Class Exponential Complexity </li>
+            <li>Extreme Class Imbalance</li>
+            <li>Curse of Dimensionality</li>
+            <li>High Noise-to-Signal Ratio</li>
+            <li>Feature Redundancy</li>
+            <li>Class Overlap</li>
+            <li>Label Contamination</li>
+          </ul>
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The main challenge is that these complexity factors don’t interact
+          additively but multiplicatively.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Class Overlap <InlineMath math={"\\times"} /> Class Imbalance{" "}
+          <InlineMath math={"\\times"} /> Inter-Class Clustering leads to
+          minority classes being trapped in overlap regions shared (or in our
+          case, dominated) by majority class examples and become virtually
+          unlearnable.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Noise <InlineMath math={"\\times"} /> Sparsity{" "}
+          <InlineMath math={"\\times"} /> High Dimensionality leads to massive
+          uncertainty. For more context, given the dominant majority class with{" "}
+          <InlineMath math={"300"} /> total samples, it is operating in a 45D
+          feature space, hence leading to high prediction uncertainty.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Redundancy <InlineMath math={"\\times"} /> Overfitting{" "}
+          <InlineMath math={"\\times"} /> Imbalance leads to potential pattern
+          memorization instead of pattern learning as{" "}
+          <InlineMath math={"51\\%"} /> noise (redundant + repeated features)
+          could potentially amplify the risks of overfitting especially in
+          minority classes having <InlineMath math={"<100"} /> samples per
+          cluster.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Finally, the multi-class classification problem enforces the
+          inheritance of these multiplicative complexities where{" "}
+          <InlineMath math={"45"} /> pairwise boundaries inherit them all.
+        </p>
+        <div className={getAllowanceClass({ axis: "py" })}></div>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
+          Adopting a Calibration-First Strategy: The "Clean Foundation
+          Principle"
+        </h2>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          A crucial distinction to understand given our context is that while
+          prediction reliability is totally broken, model calibration is very
+          much still required and is a prerequisite, as we want our classifiers
+          to be trustworthy, that is, when they affirm{" "}
+          <InlineMath math={"75\\%"} /> confidence, they are right{" "}
+          <InlineMath math={"75\\%"} /> of the time. This forms the basis of
+          this experiment as an early step to ensure that we can build effective
+          learning techniques on the foundation of trustworthy estimates.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Like the complexity factors, the primary sources (or culprits) of
+          unreliable predictions are the dataset generation parameters, and in
+          their own very different ways, they tend to result in over-confident
+          and under-confident predictions.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Primarily, in our multi-class classification scenario where we have{" "}
+          <InlineMath math={"10"} /> classes (or choices to make), the softmax
+          normalization artifact often leads to unreliable estimates. Softmax,
+          by design, forces probabilities to sum to <InlineMath math={"1"} />{" "}
+          across all classes, even when uncertain. The extent of this
+          uncertainty increases with a resulting increase in the number of
+          classes, and in such cases, classes tend to compete for probability
+          mass as the requirement of the softmax layer is to squish everything
+          to <InlineMath math={"1"} />. So the system cannot express the fact
+          that all classes are equally likely, creating artificial decisiveness.
+          In most cases, this forced decision in areas where decisions are
+          normally not meant to be made, or if they are to be, then there would
+          be a meticulously planned process for such (in overlap regions of the
+          feature space for example). This mostly leads to unreliable estimates,
+          which can hurt model interpretability.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          For the case of the <InlineMath math={"183:1"} /> class imbalance, the
+          majority class errors contribute 183x more to the loss function, and
+          the model then learns to predict the majority class to minimize the
+          loss, thus systematically underestimating the minority class. Say we
+          are implementing the cross-entropy (which we actually are in
+          practice), given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "\\text{CCE} = - \\sum_{i=1}^{C} y_i \\cdot \\log(\\hat{y}_i)"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          With <InlineMath math={"55,000"} /> Class <InlineMath math={"0"} />{" "}
+          samples vs <InlineMath math={"300"} /> Class <InlineMath math={"9"} />{" "}
+          samples, Class <InlineMath math={"0"} /> errors are computed as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"55000 \\times \\log(p_0)"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          And Class <InlineMath math={"9"} /> errors are computed as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"300 \\times \\log(p_9)"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where <InlineMath math={"p_0"} /> and <InlineMath math={"p_9"} /> are
+          the class predictions.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Due to the large disparity, the model would be optimized to account
+          for and minimize Class <InlineMath math={"0"} /> errors over Class{" "}
+          <InlineMath math={"9"} /> errors, leading to potentially
+          under-confident or over-confident predictions when faced with
+          predicting instances from the minority class (Class{" "}
+          <InlineMath math={"9"} />
+          ).
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          In the facet of intra-class clustering, unreliable estimates are
+          potential by-products and this is due to the fact that local clusters
+          per class are not inherently uniform. In our case, each class has{" "}
+          <InlineMath math={"4"} /> distinct sub-patterns, but classifiers only
+          learn a single estimate per class. Model outputs on the other hand,
+          operate by averaging the probabilities across all clusters, but each
+          cluster returns a specific certainty (or uncertainty as the case may
+          be). Assuming we got the true probability values per cluster for Class{" "}
+          <InlineMath math={"9"} /> given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"[p_9^a, p_9^b, p_9^c, p_9^d] = [0.90, 0.70, 0.45, 0.25]"}
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The model learns that <InlineMath math={"p_9"} /> is{" "}
+          <InlineMath math={"0.58"} /> which is the averaged value across all
+          clusters, but in reality, probabilities vary significantly across
+          clusters, thereby leading to an extremely unreliable estimate. The
+          resulting miscalibration issue is that <InlineMath math={"p_9"} />{" "}
+          becomes the new base rate, and the model becomes over-confident in
+          overlap regions and under-confident in clean regions (this would be
+          explained better in a bit).
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          In the case of class overlap, the reduced class separation creates
+          overlapping decision boundaries that obscures true class membership.
+          While it’s a huge problem on its own, it forces classifiers to make
+          definitive decisions with little to no information, so in essence,
+          models cannot recognize fundamental uncertainty and often create an
+          artificial one. This is due to the fact that in overlap regions, the
+          true Bayes optimal probability is <InlineMath math={"0.5"} />{" "}
+          indicating true ambiguity, but softmax forces probabilistic values
+          even in cases of significant uncertainty, as models inherently don’t
+          have the ability to express “I don’t know”. This leads to systematic
+          overconfidence especially in boundary regions, further leading to a
+          miscalibrated classifier.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Feature Redundancy also serves as a primary source of unreliable
+          estimates. This is due to the fact that redundant features which are
+          primarily no new information, appear as independent evidence to the
+          model. Given our case of about <InlineMath math={"51\\%"} />{" "}
+          redundancy, it’ll especially hurt the experimental classifiers that
+          rely on statistical dominance. Mathematically speaking, redundant
+          features are simply linear transformations of true informative
+          features (same signal, but different representation), but now the
+          model thinks that it has <InlineMath math={"45"} /> pieces of evidence
+          instead of <InlineMath math={"15"} />. To make matters even worse,
+          when a model comes into contact with a redundant feature after a truly
+          informative one, it takes it as a confirmation to the previously
+          learned pattern, which leads to an artificially inflated confidence
+          score. This then leads to over-confident prediction behaviors,
+          especially in easy-to-work-with regions like dense regions in the
+          feature space and regions with virtually no class overlap.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          To account or mitigate for these, a pre-calibration step is absolutely
+          necessary, due to the systematic untrustworthiness given the multiple
+          interacting causes.
+        </p>
+        <div className={getAllowanceClass({ axis: "py" })}></div>
+        <h1 className={getHeadingClass(1, { responsive: true, muted: true })}>
           Classifier Selection Criteria
         </h1>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           The aim was to have a well-mixed spread of linear, non-linear,{" "}
           <UnderlineLink href="https://obukofejoey.notion.site/Generative-Classifiers-21677c2a65138081a59cc0e178f509a1?source=copy_link">
             generative
-          </UnderlineLink>{" "}
-          ,
+          </UnderlineLink>
+          ,{" "}
           <UnderlineLink href="https://obukofejoey.notion.site/Discriminative-Classifiers-1f077c2a651380fdbdd0e152e6a5f51f?source=copy_link">
             discriminative
-          </UnderlineLink>{" "}
+          </UnderlineLink>
           , ensemble, and meta-learning classifiers with varying inductive
           biases, model expressiveness, and decision surface complexities.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h2 className={getHeadingClass(2, { responsive: true })}>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
           Inductive Bias
         </h2>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1200,7 +1501,7 @@ const recap: RecapModule = {
           base classifiers.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h2 className={getHeadingClass(2, { responsive: true })}>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
           Decision Surface Complexity
         </h2>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1232,7 +1533,7 @@ const recap: RecapModule = {
           More specifically, I included a mix of:
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Logistic Regression Classifier (OvR)
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1248,7 +1549,7 @@ const recap: RecapModule = {
           natural, unmodified form and observe how it performs.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Polynomial Logistic Regression Classifier
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1275,7 +1576,7 @@ const recap: RecapModule = {
           Regression with a cubic degree.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Naive Bayes Classifier
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1328,63 +1629,63 @@ const recap: RecapModule = {
           out-of-the-box model that explicitly deals with continuous variables.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Gaussian Mixture Model (GMM) Classifier
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Support Vector Classifier (Linear Kernel)
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Support Vector Classifier (Polynomial Kernel)
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Support Vector Classifier (Gaussian RBF Kernel)
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Decision Tree Classifier
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Random Forest Classifier
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Gradient Boosted Trees (XGBoost Classifier)
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Stacked Ensemble Classifier
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h2 className={getHeadingClass(2, { responsive: true })}>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
           Evaluation Metrics
         </h2>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1396,7 +1697,7 @@ const recap: RecapModule = {
           between minority classes.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Macro Accuracy
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1419,7 +1720,7 @@ const recap: RecapModule = {
           assign equally proportional weights to all classes.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Weighted Accuracy
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1441,7 +1742,7 @@ const recap: RecapModule = {
           for a multi-class setup.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Top-k Accuracy
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1479,7 +1780,7 @@ const recap: RecapModule = {
           possible underfitting).
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Macro AUC-ROC
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1525,7 +1826,9 @@ const recap: RecapModule = {
           justified) as characterized by the AUC-ROC score.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3)}>Per-Class AUC-ROC</h3>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
+          Per-Class AUC-ROC
+        </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           In an imbalanced setting like mine, some classes are extremely
           underrepresented, and I needed a fine-grained metric to see where each
@@ -1538,9 +1841,13 @@ const recap: RecapModule = {
           performance, especially for the minority classes.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h2 className={getHeadingClass(2)}>Calibration Metrics</h2>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
+          Calibration Metrics
+        </h2>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3)}>Expected Calibration Error (ECE)</h3>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
+          Expected Calibration Error (ECE)
+        </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           In determining the ECE score, the main idea is to group predictions
           into confidence bins (e.g., 0–0.1, 0.1–0.2, …, 0.9–1.0), then, for
@@ -1561,7 +1868,9 @@ const recap: RecapModule = {
           underrepresented classes.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3)}>Maximum Calibration Error (MCE)</h3>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
+          Maximum Calibration Error (MCE)
+        </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           Where ECE gives the weighted global average, this shows the worst-case
           calibration error across all bins. I am using this metric to
@@ -1570,7 +1879,9 @@ const recap: RecapModule = {
           overconfident in one region or underconfident in another).
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3)}>Brier Score (MSE)</h3>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
+          Brier Score (MSE)
+        </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           The Brier score is a proper scoring rule that measures the mean
           squared error between predicted probabilities and the actual class
@@ -1590,7 +1901,7 @@ const recap: RecapModule = {
           assessing post-calibration gains.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3)}>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
           Normalized Negative Entropy (NNE)
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -1612,7 +1923,9 @@ const recap: RecapModule = {
           whether the classifiers were confidently bad or cautiously correct.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h1 className={getHeadingClass(1)}>Experiment Overview</h1>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
+          Experiment Overview
+        </h2>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           This experiment is designed to train, evaluate, calibrate, and compare
           the performances of out-of-box classifiers with respect to both
@@ -1651,7 +1964,9 @@ const recap: RecapModule = {
           extent while preserving (or improving) class discrimination.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h1 className={getHeadingClass(1)}>Experiment Goals and Motivations</h1>
+        <h1 className={getHeadingClass(1, { responsive: true, muted: true })}>
+          Experiment Goals and Motivations
+        </h1>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           While the end goal of this experiment is to train classifiers that not
           only achieve strong accuracy and ranking abilities, but also produce
@@ -1693,7 +2008,9 @@ const recap: RecapModule = {
           </li>
         </ul>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h1 className={getHeadingClass(1)}>Experiment Setup</h1>
+        <h1 className={getHeadingClass(1, { responsive: true, muted: true })}>
+          Experiment Setup
+        </h1>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           The dataset contained () samples with () features and () target
           classes in imbalanced proportions. Prior to modeling, we analyzed data
@@ -1750,12 +2067,14 @@ const recap: RecapModule = {
           pipeline stages.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h1 className={getHeadingClass(1)}>Experiment Design Notes</h1>
+        <h1 className={getHeadingClass(1, { responsive: true, muted: true })}>
+          Experiment Design Notes
+        </h1>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           ...
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h2 className={getHeadingClass(2)}>
+        <h2 className={getHeadingClass(2, { responsive: true, muted: true })}>
           Model Identity Crisis and Divergence Control
         </h2>
         <h3 className={getHeadingClass(3)}>Design Goal</h3>
@@ -1769,7 +2088,9 @@ const recap: RecapModule = {
           named based on their pipeline role and contextual usage.
         </p>
         <div className={getAllowanceClass({ axis: "py" })}></div>
-        <h3 className={getHeadingClass(3)}>Risks Avoided</h3>
+        <h3 className={getHeadingClass(3, { responsive: true, muted: true })}>
+          Risks Avoided
+        </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           <ul
             className={getListClass({
@@ -2753,30 +3074,73 @@ export const recapMetadata = recap.metadata;
 export const metadata = {
   title: recap.metadata.title,
   description: recap.metadata.description,
+
+  alternates: {
+    canonical: `/learning/recap/week-${recap.metadata.weekNumber}`,
+  },
+
   openGraph: {
     title: recap.metadata.title,
     description: recap.metadata.description,
+    url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+    siteName: "Obukofe Joseph",
+    locale: "en_US",
+    type: "article",
     images: [
       {
         url: "/images/thumbnails/22.png",
         width: 1200,
         height: 630,
         alt: "Week 22 Recap",
+        type: "image/png",
       },
     ],
-    type: "article",
   },
+
   twitter: {
     card: "summary_large_image",
     title: recap.metadata.title,
     description: recap.metadata.description,
+    creator: "@obukofejoe",
     images: [
       {
         url: "/images/thumbnails/22.png",
         width: 1200,
         height: 630,
         alt: "Week 22 Recap",
+        type: "image/png",
       },
     ],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    "max-snippet": 200,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": 200,
+    },
+  },
+
+  other: {
+    "application/ld+json": JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Week 22 Recap",
+      description: "Calibration Experimentation",
+      url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+      author: {
+        "@type": "Person",
+        name: "Obukofe Joseph",
+        alternateName: "Obukofe Joe",
+        url: "https://obukofejoseph.com",
+        image: "https://obukofejoseph.com/images/thumbnails/22.png",
+        sameAs: ["https://twitter.com/obukofejoe"],
+      },
+    }),
   },
 };

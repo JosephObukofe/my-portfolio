@@ -18,15 +18,16 @@ export function getHeadingClass(
   level: 1 | 2 | 3,
   options?: {
     responsive?: boolean;
+    muted?: boolean;
     customColor?: string;
   }
 ) {
   const heading = typography.headings[`h${level}` as "h1" | "h2" | "h3"];
 
   return clsx(
-    base.font.grotesk,
-    base.weight.semibold,
-    options?.customColor ?? base.color.default,
+    base.font.satoshi,
+    base.weight.medium,
+    options?.muted ? base.color.muted : base.color.default,
     options?.responsive && [
       ...applyResponsive(heading.fontSize),
       ...applyResponsive(heading.leading),
@@ -103,7 +104,7 @@ export function getListClass(options: ListOptions = {}) {
 }
 
 export function getMathBlockClass() {
-  return clsx("overflow-x-auto", "max-w-full", "px-4");
+  return clsx("overflow-x-auto", "max-w-full", "px-4", "py-4");
 }
 
 export function getInlineCodeClass() {
@@ -257,7 +258,7 @@ export function getWeekInfoClass() {
 export function getTooltipClass() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const baseClasses = clsx(typography.tooltip.base);
+  const baseClasses = clsx(typography.tooltip.base, base.font.grotesk);
 
   const style = {
     backgroundColor: isDark
@@ -333,4 +334,13 @@ export function convertToPercentageStack(data: any[]): any[] {
     increase: d.increase * 100,
     decrease: d.decrease * 100,
   }));
+}
+
+export function getSignatureClass() {
+  return clsx(
+    base.font.laBelleAurore,
+    base.color.default,
+    base.weight.medium,
+    ...applyResponsive(typography.signature.fontSize)
+  );
 }

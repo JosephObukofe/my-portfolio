@@ -12,9 +12,9 @@ export function InlineCode({ className, children, ...props }: InlineCodeProps) {
       className={cn(
         "font-mono",
         "text-[0.65rem] sm:text-[0.75rem]",
-        "px-1.5 py-[1px] sm:px-2 sm:py-[2px]",
+        "px-1.5 py-[0.25px] sm:px-1.5 sm:py-[0.25px]",
         "text-[#E03E3E] bg-[#F1F1F0]",
-        "dark:text-[#FF7262] dark:bg-[#2F2F2F]",
+        "dark:text-[#FF7262] dark:bg-[#242424]",
         "rounded-md",
         "transition-colors duration-200",
         "font-medium",

@@ -286,22 +286,10 @@ const recap: RecapModule = {
     weekNumber: 21,
     title: "Week 21",
     date: "2025-07-16",
-    description: "...",
+    description: "Classifier Calibration (cont.)",
     focusAreas: ["ML"],
-    status: "Completed",
-    thumbnail: "/images/recaps/week-1-thumb.png",
-    resources: [
-      {
-        label: "Airflow DAG Concepts",
-        type: "Blog",
-        url: "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html",
-      },
-      {
-        label: "Mini-batch Training Overview",
-        type: "Video",
-        url: "https://www.youtube.com/watch?v=xyz",
-      },
-    ],
+    status: "Ongoing",
+    thumbnail: "/images/thumbnails/21.png",
   },
   content: () => (
     <>
@@ -315,11 +303,33 @@ const recap: RecapModule = {
           week={21}
           date="May 19 – May 25"
           status="Ongoing"
-          description="..."
-          focusAreas={["Rust", "Data Versioning"]}
+          description="Classifier Calibration (cont.)"
+          focusAreas={["ML"]}
           resources={[
-            { label: "Introduction to DVC", url: "https://dvc.org/doc" },
-            { label: "Rust Book", url: "https://doc.rust-lang.org/book/" },
+            {
+              label: "Calibration of Modern NN's",
+              url: "https://arxiv.org/abs/1706.04599",
+            },
+            {
+              label: "Calibrated Isotonic Regression",
+              url: "https://link.springer.com/chapter/10.1007/978-3-030-75762-5_46",
+            },
+            {
+              label: "Probability Calibration",
+              url: "https://scikit-learn.org/stable/modules/calibration.html",
+            },
+            {
+              label: "Appropriateness of Platt Scaling",
+              url: "https://www.sciencedirect.com/science/article/abs/pii/S0306437920301083",
+            },
+            {
+              label: "Histogram Binning",
+              url: "https://questdb.com/glossary/histogram-binning/",
+            },
+            {
+              label: "Affine Transformations",
+              url: "https://www.youtube.com/watch?v=E3Phj6J287o&pp=ygUdYWZmaW5lIHRyYW5zZm9ybWF0aW9uIGV4YW1wbGU%3D",
+            },
           ]}
         />
         <div className={getAllowanceClass({ axis: "py" })}></div>
@@ -1116,13 +1126,6 @@ const recap: RecapModule = {
           <HorizontalBarPlotChart data={data} xKey="week" yKey="hours" />
         </div>
         <div className="flex items-center justify-center">
-          <StackedBarPlotChart
-            data={stockData}
-            xKey="symbol"
-            yKeys={["change"]}
-          />
-        </div>
-        <div className="flex items-center justify-center">
           <LinePlotChart data={lineChartData} xKey="month" yKey="users" />
         </div>
         <div className="flex items-center justify-center">
@@ -1163,30 +1166,73 @@ export const recapMetadata = recap.metadata;
 export const metadata = {
   title: recap.metadata.title,
   description: recap.metadata.description,
+
+  alternates: {
+    canonical: `/learning/recap/week-${recap.metadata.weekNumber}`,
+  },
+
   openGraph: {
     title: recap.metadata.title,
     description: recap.metadata.description,
+    url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+    siteName: "Obukofe Joseph",
+    locale: "en_US",
+    type: "article",
     images: [
       {
         url: "/images/thumbnails/21.png",
         width: 1200,
         height: 630,
         alt: "Week 21 Recap",
+        type: "image/png",
       },
     ],
-    type: "article",
   },
+
   twitter: {
     card: "summary_large_image",
     title: recap.metadata.title,
     description: recap.metadata.description,
+    creator: "@obukofejoe",
     images: [
       {
         url: "/images/thumbnails/21.png",
         width: 1200,
         height: 630,
         alt: "Week 21 Recap",
+        type: "image/png",
       },
     ],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    "max-snippet": 200,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": 200,
+    },
+  },
+
+  other: {
+    "application/ld+json": JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Week 21 Recap",
+      description: "Classifier Calibration (cont.)",
+      url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+      author: {
+        "@type": "Person",
+        name: "Obukofe Joseph",
+        alternateName: "Obukofe Joe",
+        url: "https://obukofejoseph.com",
+        image: "https://obukofejoseph.com/images/thumbnails/21.png",
+        sameAs: ["https://twitter.com/obukofejoe"],
+      },
+    }),
   },
 };

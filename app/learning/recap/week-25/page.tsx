@@ -4,6 +4,8 @@ import {
   getSectionClass,
   getParagraphClass,
   getHeadingClass,
+  getAllowanceClass,
+  getPageAllowanceClass,
 } from "@/utils/typography";
 import { WeekInfo } from "@/app/components/ui/week-info";
 import { UnderlineLink } from "@/app/components/ui/underline-link";
@@ -15,40 +17,37 @@ const recap: RecapModule = {
     date: "2025-06-22",
     description: "...",
     focusAreas: ["General"],
-    status: "Ongoing",
-    thumbnail: "/public/images/thumbnails/25.png",
-    resources: [
-      {
-        label: "...",
-        type: "Blog",
-        url: "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html",
-      },
-      {
-        label: "...",
-        type: "Video",
-        url: "https://www.youtube.com/watch?v=xyz",
-      },
-    ],
+    status: "Draft",
+    thumbnail: "/images/thumbnails/25.png",
   },
   content: () => (
     <>
       <section
         className={getSectionClass({
-          includeMarginTop: true,
+          includeMarginTop: false,
           includeMarginBottom: true,
         })}
       >
+        <div className={getPageAllowanceClass({ axis: "py" })}></div>
         <WeekInfo
           week={25}
           date="Jun 16 – Jun 22"
-          status="Ongoing"
+          status="Draft"
           description="..."
           focusAreas={["..."]}
           resources={[
-            { label: "...", url: "https://dvc.org/doc" },
-            { label: "...", url: "https://doc.rust-lang.org/book/" },
+            { label: "...", url: "" },
+            { label: "...", url: "" },
           ]}
         />
+        <div className={getAllowanceClass()}></div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Work in progress.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          I’m still shaping it up, but not done. Check back for the finished
+          version.
+        </p>
       </section>
     </>
   ),
@@ -63,30 +62,73 @@ export const recapMetadata = recap.metadata;
 export const metadata = {
   title: recap.metadata.title,
   description: recap.metadata.description,
+
+  alternates: {
+    canonical: `/learning/recap/week-${recap.metadata.weekNumber}`,
+  },
+
   openGraph: {
     title: recap.metadata.title,
     description: recap.metadata.description,
+    url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+    siteName: "Obukofe Joseph",
+    locale: "en_US",
+    type: "article",
     images: [
       {
         url: "/images/thumbnails/25.png",
         width: 1200,
         height: 630,
         alt: "Week 25 Recap",
+        type: "image/png",
       },
     ],
-    type: "article",
   },
+
   twitter: {
     card: "summary_large_image",
     title: recap.metadata.title,
     description: recap.metadata.description,
+    creator: "@obukofejoe",
     images: [
       {
         url: "/images/thumbnails/25.png",
         width: 1200,
         height: 630,
         alt: "Week 25 Recap",
+        type: "image/png",
       },
     ],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    "max-snippet": 200,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": 200,
+    },
+  },
+
+  other: {
+    "application/ld+json": JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Week 25 Recap",
+      description: "...",
+      url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+      author: {
+        "@type": "Person",
+        name: "Obukofe Joseph",
+        alternateName: "Obukofe Joe",
+        url: "https://obukofejoseph.com",
+        image: "https://obukofejoseph.com/images/thumbnails/25.png",
+        sameAs: ["https://twitter.com/obukofejoe"],
+      },
+    }),
   },
 };

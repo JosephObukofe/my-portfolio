@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 72 100% 99%; /* Light theme fill: #FDFFF5 */
+    --background: 72 100% 99%;
     --foreground: 0 0% 0%; /* Pure black text */
 
     --card: 72 100% 99%;
@@ -46,32 +46,32 @@
   }
 
   .dark {
-    --background: 0 0% 13%; /* Dark theme fill: #212121 */
+    --background: 0 0% 10%; /* Darkened from 13% to 10% */
     --foreground: 0 0% 100%; /* Pure white text */
 
-    --card: 0 0% 13%;
+    --card: 0 0% 10%; /* Darkened to match background */
     --card-foreground: 0 0% 100%; /* Pure white text */
 
-    --popover: 0 0% 13%;
+    --popover: 0 0% 10%; /* Darkened to match background */
     --popover-foreground: 0 0% 100%; /* Pure white text */
 
     --primary: 0 0% 100%; /* Pure white for primary elements */
-    --primary-foreground: 0 0% 13%; /* Dark background text on primary */
+    --primary-foreground: 0 0% 10%; /* Dark background text on primary */
 
-    --secondary: 0 0% 20%;
+    --secondary: 0 0% 18%; /* Slightly darkened from 20% to 18% */
     --secondary-foreground: 0 0% 100%; /* Pure white text */
 
-    --muted: 0 0% 20%;
+    --muted: 0 0% 18%; /* Slightly darkened from 20% to 18% */
     --muted-foreground: 0 0% 62%; /* Slightly lighter #848484 for dark theme - Kept as muted */
 
-    --accent: 0 0% 20%;
+    --accent: 0 0% 18%; /* Slightly darkened from 20% to 18% */
     --accent-foreground: 0 0% 100%; /* Pure white text */
 
     --destructive: 0 62.8% 45%;
     --destructive-foreground: 0 0% 100%; /* White text on destructive */
 
-    --border: 0 0% 25%;
-    --input: 0 0% 20%;
+    --border: 0 0% 22%; /* Slightly darkened from 25% to 22% */
+    --input: 0 0% 18%; /* Slightly darkened from 20% to 18% */
     --ring: 0 0% 100%; /* White focus ring */
 
     --sh-class: #4c97f8;
@@ -84,8 +84,14 @@
     @apply border-border;
   }
 
-  body {
+  body,
+  p,
+  h1,
+  h2,
+  h3 {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-satoshi);
     font-size: 0.9rem;
     line-height: 1.65;
@@ -96,6 +102,15 @@
     font-family: var(--font-satoshi);
     font-weight: 500;
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  h1,
+  h2,
+  h3,
+  p {
+    font-weight: 400; /* instead of 500 */
   }
 }
 
@@ -254,4 +269,8 @@ table {
 
 .chart-container .recharts-surface {
   overflow: visible !important;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
 }

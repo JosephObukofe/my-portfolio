@@ -21,22 +21,10 @@ const recap: RecapModule = {
     weekNumber: 20,
     title: "Week 20",
     date: "2025-05-18",
-    description: "...",
+    description: "Classifier Calibration",
     focusAreas: ["ML"],
-    status: "Ongoing",
-    thumbnail: "/public/images/thumbnails/20.png",
-    resources: [
-      {
-        label: "...",
-        type: "Blog",
-        url: "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html",
-      },
-      {
-        label: "...",
-        type: "Video",
-        url: "https://www.youtube.com/watch?v=xyz",
-      },
-    ],
+    status: "Completed",
+    thumbnail: "/images/thumbnails/20.png",
   },
   content: () => (
     <>
@@ -49,14 +37,29 @@ const recap: RecapModule = {
         <WeekInfo
           week={20}
           date="May 12 – May 18"
-          status="Ongoing"
-          description="..."
-          focusAreas={["..."]}
+          status="Completed"
+          description="Classifier Calibration"
+          focusAreas={["ML"]}
           resources={[
-            { label: "...", url: "https://dvc.org/doc" },
-            { label: "...", url: "https://doc.rust-lang.org/book/" },
+            {
+              label: "Conformal Predictions",
+              url: "https://www.dailydoseofds.com/conformal-predictions-build-confidence-in-your-ml-models-predictions/",
+            },
+            {
+              label: "Classifier Calibration",
+              url: "https://arxiv.org/abs/2501.19047",
+            },
+            {
+              label: "Probability Calibration: DS Concepts",
+              url: "https://www.youtube.com/watch?v=AunotauS5yI",
+            },
+            {
+              label: "Model Calibration Pt.1",
+              url: "https://www.dailydoseofds.com/a-crash-course-of-model-calibration-classification-models/",
+            },
           ]}
         />
+        <div className={getAllowanceClass({ axis: "py" })}></div>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           This week was a deep dive into the rabbit hole of model calibration,
           and it was so refreshing to realize how classifiers cannot be just
@@ -1055,30 +1058,73 @@ export const recapMetadata = recap.metadata;
 export const metadata = {
   title: recap.metadata.title,
   description: recap.metadata.description,
+
+  alternates: {
+    canonical: `/learning/recap/week-${recap.metadata.weekNumber}`,
+  },
+
   openGraph: {
     title: recap.metadata.title,
     description: recap.metadata.description,
+    url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+    siteName: "Obukofe Joseph",
+    locale: "en_US",
+    type: "article",
     images: [
       {
         url: "/images/thumbnails/20.png",
         width: 1200,
         height: 630,
         alt: "Week 20 Recap",
+        type: "image/png",
       },
     ],
-    type: "article",
   },
+
   twitter: {
     card: "summary_large_image",
     title: recap.metadata.title,
     description: recap.metadata.description,
+    creator: "@obukofejoe",
     images: [
       {
         url: "/images/thumbnails/20.png",
         width: 1200,
         height: 630,
         alt: "Week 20 Recap",
+        type: "image/png",
       },
     ],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    "max-snippet": 200,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": 200,
+    },
+  },
+
+  other: {
+    "application/ld+json": JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Week 20 Recap",
+      description: "Classifier Calibration",
+      url: `https://obukofejoseph.com/learning/recap/week-${recap.metadata.weekNumber}`,
+      author: {
+        "@type": "Person",
+        name: "Obukofe Joseph",
+        alternateName: "Obukofe Joe",
+        url: "https://obukofejoseph.com",
+        image: "https://obukofejoseph.com/images/thumbnails/20.png",
+        sameAs: ["https://twitter.com/obukofejoe"],
+      },
+    }),
   },
 };

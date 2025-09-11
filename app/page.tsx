@@ -41,6 +41,5 @@ export default function Page() {
     );
   }
 
-  // Regular page content - your original simple structure
   return <section></section>;
 }
