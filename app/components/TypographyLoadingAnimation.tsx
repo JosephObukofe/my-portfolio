@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface WordPair {
   first: {
@@ -11,13 +12,6 @@ interface WordPair {
     text: string;
     className: string;
   };
-}
-
-interface AnimationState {
-  currentPairIndex: number;
-  showFirst: boolean;
-  showSecond: boolean;
-  showPair: boolean;
 }
 
 interface TypographyLoadingAnimationProps {
@@ -48,24 +42,95 @@ const TypographyLoadingAnimation: React.FC<TypographyLoadingAnimationProps> = ({
     },
   ];
 
-  const [animState, setAnimState] = useState<AnimationState>({
-    currentPairIndex: 0,
-    showFirst: false,
-    showSecond: false,
-    showPair: true,
-  });
-
+  const [currentPairIndex, setCurrentPairIndex] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
-  const [cycleCount, setCycleCount] = useState(0);
+  const [showPair, setShowPair] = useState(true);
+
+  // Container variants - matches your menu system exactly
+  const containerVariants = {
+    hidden: {
+      opacity: 0,
+      y: 25,
+      scale: 0.95,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 40,
+        mass: 0.6,
+        duration: 0.4,
+        when: "beforeChildren",
+        staggerChildren: 0.08, // Same stagger as your menu
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: 7.5,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeIn",
+        when: "beforeChildren",
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  // Individual word variants - matches your menu items exactly
+  const wordVariants = {
+    hidden: {
+      opacity: 0,
+      y: 15,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 28,
+        duration: 0.3,
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: 7.5,
+      scale: 1,
+      transition: {
+        duration: 0.25,
+        ease: "easeIn",
+      },
+    },
+  };
+
+  // Screen fade variants for completion
+  const screenVariants = {
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+      },
+    },
+    completing: {
+      opacity: 0,
+      transition: {
+        duration: 1,
+        ease: "easeOut",
+      },
+    },
+  };
 
   useEffect(() => {
-    // Set up completion timer if onComplete is provided
     if (onComplete && duration) {
       const completionTimer = setTimeout(() => {
         setIsCompleting(true);
         setTimeout(() => {
           onComplete();
-        }, 1000); // Fade out time
+        }, 1000);
       }, duration);
 
       return () => clearTimeout(completionTimer);
@@ -73,101 +138,82 @@ const TypographyLoadingAnimation: React.FC<TypographyLoadingAnimationProps> = ({
   }, [onComplete, duration]);
 
   useEffect(() => {
-    if (isCompleting) return; // Stop animation if completing
+    if (isCompleting) return;
 
-    const animateSequence = async () => {
-      // Show the pair container
-      setAnimState((prev) => ({ ...prev, showPair: true }));
+    const animationSequence = async () => {
+      // Show current pair
+      setShowPair(true);
 
-      // Small delay before starting
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Keep visible for display time
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Show first word with slow appear
-      setAnimState((prev) => ({ ...prev, showFirst: true }));
+      // Hide pair
+      setShowPair(false);
 
-      // Wait for first word animation to complete, then show second
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      setAnimState((prev) => ({ ...prev, showSecond: true }));
+      // Wait for exit animation
+      await new Promise((resolve) => setTimeout(resolve, 600));
 
-      // Keep both visible for a moment
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Fade out both words
-      setAnimState((prev) => ({
-        ...prev,
-        showPair: false,
-        showFirst: false,
-        showSecond: false,
-      }));
-
-      // Wait for fade out to complete
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
-      // Move to next pair and increment cycle count
-      setAnimState((prev) => ({
-        ...prev,
-        currentPairIndex: (prev.currentPairIndex + 1) % wordPairs.length,
-      }));
-
-      setCycleCount((prev) => prev + 1);
+      // Move to next pair
+      setCurrentPairIndex((prev) => (prev + 1) % wordPairs.length);
     };
 
-    animateSequence();
+    // Start first animation after initial delay
+    const initialTimer = setTimeout(() => {
+      animationSequence();
+    }, 500);
 
-    // Set up interval for continuous loop (only if not completing)
+    // Set up continuous loop
     const interval = setInterval(() => {
       if (!isCompleting) {
-        animateSequence();
+        animationSequence();
       }
-    }, 4000);
+    }, 3200); // Total cycle time
 
-    return () => clearInterval(interval);
-  }, [animState.currentPairIndex, isCompleting, wordPairs.length]);
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(interval);
+    };
+  }, [currentPairIndex, isCompleting, wordPairs.length]);
 
-  const currentPair = wordPairs[animState.currentPairIndex];
+  const currentPair = wordPairs[currentPairIndex];
 
   return (
-    <div
-      className={`typography-loading-screen ${
-        isCompleting ? "completing" : ""
-      }`}
+    <motion.div
+      className="typography-loading-screen"
+      variants={screenVariants}
+      initial="visible"
+      animate={isCompleting ? "completing" : "visible"}
     >
-      {/* Header */}
-      <header className="loading-header">
-        <div className="brand">oj.</div>
-      </header>
-
-      {/* Main typography animation */}
       <main className="loading-main">
         <div className="loading-typography-container">
-          <div
-            className={`word-pair-container ${
-              animState.showPair ? "visible" : "hidden"
-            }`}
-          >
-            <span
-              className={`word-animation ${currentPair.first.className} ${
-                animState.showFirst ? "word-visible" : "word-hidden"
-              }`}
-            >
-              {currentPair.first.text}
-            </span>
+          <AnimatePresence mode="wait">
+            {showPair && (
+              <motion.div
+                key={currentPairIndex}
+                className="word-pair-container"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <motion.span
+                  variants={wordVariants}
+                  className={`word-animation ${currentPair.first.className}`}
+                >
+                  {currentPair.first.text}
+                </motion.span>
 
-            <span
-              className={`word-animation ${currentPair.second.className} ${
-                animState.showSecond ? "word-visible" : "word-hidden"
-              }`}
-            >
-              {currentPair.second.text}
-            </span>
-          </div>
+                <motion.span
+                  variants={wordVariants}
+                  className={`word-animation ${currentPair.second.className}`}
+                >
+                  {currentPair.second.text}
+                </motion.span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="loading-footer">
-        <div className="year">© 2025</div>
-      </footer>
 
       <style jsx>{`
         .typography-loading-screen {
@@ -186,30 +232,6 @@ const TypographyLoadingAnimation: React.FC<TypographyLoadingAnimationProps> = ({
           display: flex;
           flex-direction: column;
           min-height: 100vh;
-          transition: opacity 1s ease-out;
-        }
-
-        .typography-loading-screen.completing {
-          opacity: 0;
-        }
-
-        .loading-header {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          padding: 2rem;
-          display: flex;
-          justify-content: flex-start;
-          z-index: 10;
-        }
-
-        .brand {
-          font-family: "Space Grotesk", sans-serif;
-          font-weight: 600;
-          font-size: 1.5rem;
-          color: #1f2937;
-          letter-spacing: -0.02em;
         }
 
         .loading-main {
@@ -225,44 +247,23 @@ const TypographyLoadingAnimation: React.FC<TypographyLoadingAnimationProps> = ({
           align-items: center;
           justify-content: center;
           height: 100%;
-          font-family: "Satoshi", sans-serif;
+          width: 100%;
         }
 
         .word-pair-container {
           display: flex;
-          flex-direction: column;
-          align-items: center;
+          flex-direction: row;
+          align-items: baseline;
+          justify-content: center;
           gap: 1rem;
-          transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .word-pair-container.visible {
-          opacity: 1;
-        }
-
-        .word-pair-container.hidden {
-          opacity: 0;
+          flex-wrap: wrap;
         }
 
         .word-animation {
-          display: block;
-          transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-          transform-origin: center;
+          display: inline-block;
         }
 
-        .word-hidden {
-          opacity: 0;
-          transform: scale(0.95) translateY(8px);
-          filter: blur(1px);
-        }
-
-        .word-visible {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-          filter: blur(0);
-        }
-
-        /* Your brilliant typography system */
+        /* Typography system */
         .minimalist-word {
           font-family: "Satoshi", sans-serif;
           font-weight: 400;
@@ -335,30 +336,8 @@ const TypographyLoadingAnimation: React.FC<TypographyLoadingAnimationProps> = ({
           color: #1f2937;
         }
 
-        .loading-footer {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          padding: 2rem;
-          display: flex;
-          justify-content: center;
-        }
-
-        .year {
-          font-family: "Satoshi", sans-serif;
-          font-weight: 400;
-          font-size: 0.875rem;
-          color: #94a3b8;
-        }
-
         /* Responsive design */
         @media (max-width: 768px) {
-          .loading-header,
-          .loading-footer {
-            padding: 1.5rem;
-          }
-
           .minimalist-word,
           .maximalist-word {
             font-size: 2.5rem;
@@ -377,20 +356,14 @@ const TypographyLoadingAnimation: React.FC<TypographyLoadingAnimationProps> = ({
           }
 
           .word-pair-container {
-            gap: 0.5rem;
-          }
-
-          .loading-main {
-            padding: 1rem;
+            gap: 0.75rem;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
           }
         }
 
         @media (max-width: 480px) {
-          .loading-header,
-          .loading-footer {
-            padding: 1rem;
-          }
-
           .minimalist-word,
           .maximalist-word {
             font-size: 2rem;
@@ -408,12 +381,12 @@ const TypographyLoadingAnimation: React.FC<TypographyLoadingAnimationProps> = ({
             font-size: 1.6rem;
           }
 
-          .brand {
-            font-size: 1.25rem;
+          .word-pair-container {
+            gap: 0.5rem;
           }
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,7 +1,14 @@
 // components/PageTransitionProvider.tsx
 "use client";
 
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
   motion,
@@ -56,8 +63,69 @@ export function PageTransitionProvider({
   const pathname = usePathname();
   const loadingTimeoutRef = useRef<NodeJS.Timeout>();
 
+  // 🎯 BULLETPROOF SCROLL TO TOP WITH PERFECT TIMING
+  // This ensures everything is fully rendered and settled before scrolling
+  const scrollToTop = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    console.log("🚀 Starting bulletproof scroll to top...");
+
+    // Wait for any immediate layout effects to complete
+    requestAnimationFrame(() => {
+      // Wait one more frame to be absolutely sure content is painted
+      requestAnimationFrame(() => {
+        // Add a small delay to let any async content or images settle
+        setTimeout(() => {
+          console.log("📏 Content settled, executing scroll to top");
+
+          // Disable smooth scrolling temporarily for instant scroll
+          const originalBehavior =
+            document.documentElement.style.scrollBehavior;
+          document.documentElement.style.scrollBehavior = "auto";
+
+          // Multiple scroll methods for maximum compatibility
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+
+          // Force one final scroll to ensure it stuck
+          requestAnimationFrame(() => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            // Restore original scroll behavior
+            document.documentElement.style.scrollBehavior = originalBehavior;
+
+            console.log("✅ Bulletproof scroll to top completed!");
+          });
+        }, 50); // Small delay to let content fully settle
+      });
+    });
+  }, []);
+
+  // 🔧 SET UP SCROLL RESTORATION ONCE ON MOUNT
+  // We disable browser scroll restoration and handle it ourselves
+  useEffect(() => {
+    if (typeof window !== "undefined" && "history" in window) {
+      // Disable browser scroll restoration so we have full control
+      history.scrollRestoration = "manual";
+      console.log("🔧 Scroll restoration set to manual");
+    }
+
+    // Cleanup: restore browser default when component unmounts
+    return () => {
+      if (typeof window !== "undefined" && "history" in window) {
+        history.scrollRestoration = "auto";
+        console.log("🧹 Scroll restoration restored to auto");
+      }
+    };
+  }, []);
+
   const startTransition = (href: string) => {
     if (isTransitioning) return;
+
+    console.log("🎬 Starting transition to:", href);
 
     setIsTransitioning(true);
     setTargetHref(href);
@@ -80,6 +148,8 @@ export function PageTransitionProvider({
   const startCloseTransition = () => {
     if (isTransitioning) return;
 
+    console.log("🎬 Starting menu close transition");
+
     setIsTransitioning(true);
     setTransitionStage("menuExit");
 
@@ -92,6 +162,7 @@ export function PageTransitionProvider({
     setTimeout(() => {
       setTransitionStage("idle");
       setIsTransitioning(false);
+      console.log("✅ Menu close transition completed");
     }, 1000);
   };
 
@@ -129,7 +200,8 @@ export function PageTransitionProvider({
     updateProgress();
   };
 
-  // Complete loading when pathname changes (real page loaded!)
+  // 🎯 COMPLETE LOADING WHEN NAVIGATION FINISHES AND SCROLL TO TOP
+  // This is where the magic happens - simple, reliable, no conflicts!
   useEffect(() => {
     if (
       isTransitioning &&
@@ -137,6 +209,8 @@ export function PageTransitionProvider({
       targetHref &&
       pathname === new URL(targetHref, window.location.origin).pathname
     ) {
+      console.log("🎯 Navigation completed, finishing transition...");
+
       // Clear any ongoing progress updates
       if (loadingTimeoutRef.current) {
         clearTimeout(loadingTimeoutRef.current);
@@ -157,13 +231,19 @@ export function PageTransitionProvider({
           setIsTransitioning(false);
           setTargetHref(null);
           setLoadingProgress(0);
+
+          // 🚀 SCROLL TO TOP - This happens right when transition completes!
+          // Simple, reliable, no complex timing or observers needed
+          scrollToTop();
+
+          console.log("🎉 Page transition fully completed!");
         }, 800);
       };
 
       // Add a tiny delay to make the final progress feel natural
       setTimeout(finishLoading, 100 + Math.random() * 200);
     }
-  }, [pathname, isTransitioning, targetHref]);
+  }, [pathname, isTransitioning, targetHref, scrollToTop]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -214,7 +294,7 @@ function LoadingTransitionOverlay({
 
   // Update display when animated value changes
   useEffect(() => {
-    return roundedCounter.onChange(setDisplayCounter);
+    return roundedCounter.on("change", setDisplayCounter);
   }, [roundedCounter]);
 
   // Animate to real loading progress with buttery smooth spring

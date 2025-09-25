@@ -447,6 +447,123 @@ const recap: RecapModule = {
         </p>
         <div className={getAllowanceClass()}></div>
         <h3 className={getHeadingClass(3, { responsive: true })}>
+          Samples Per Cluster
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The goal of this measure is to ensure that samples are reasonably
+          distributed across the natural clusters in each class, so that local
+          population densities are preserved after resampling. Here, the major
+          intuition is to tally the number of samples per cluster{" "}
+          <InlineMath math={"(c)"} /> in each class <InlineMath math={"(k)"} />{" "}
+          <InlineMath math={"\\rightarrow n_{(c, k)}"} /> choose a target{" "}
+          <InlineMath math={"n_c^\\ast"} /> per cluster, which is target number
+          of samples per cluster (what we want after resampling), and then
+          compute the number of samples to generate for the given cluster{" "}
+          <InlineMath math={"(r_{c, k})"} /> given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"r_{c,k} = n_c^\\ast - n_{c,k}"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          A cluster is said to be underrepresented when{" "}
+          <InlineMath math={"n_{c,k} < n_c^\\ast"} />. In that case, we’d need
+          to oversample, which is to generate <InlineMath math={"r_{c,k}"} />{" "}
+          synthetic samples. If a cluster already has{" "}
+          <InlineMath math={"n_{c,k} \\geq n_c^\\ast"} />, then{" "}
+          <InlineMath math={"r_{c,k} = 0"} />.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          To pick a viable value for <InlineMath math={"n^\\ast"} />, we’d
+          impose a class-conditional uniformity solution, with the max strategy
+          and minimum safe value threshold. The class-conditional characteristic
+          means that we’d set different values of{" "}
+          <InlineMath math={"n_c^\\ast"} /> per class, and the max strategy
+          ensures that each cluster size matches the maximum cluster within
+          class <InlineMath math={"c"} />, given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"n^\\ast_c = \\max_{k=1..K_c} n_{c,k}"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The issue with this approach is that, capping off{" "}
+          <InlineMath math={"n^\\ast_c"} /> to match the largest cluster means
+          that smaller clusters would have more aggressive oversampling factors,
+          that is, padding extremely fewer real neighbors with extremely larger
+          synthetic ones, leading to oversampling noise and potentially ruining
+          interpolation quality. This particularly applies to much smaller
+          clusters and we want to ensure that our max cap value doesn’t lead to
+          their explosive growth, hence, we’d introduce a form of safety cutoff
+          known as minimum safety threshold (<InlineCode>min_safe</InlineCode>).
+          We’d implement a capped oversampling ratio{" "}
+          <InlineMath math={"(\\rho_c)"} /> as <InlineMath math={"5"} />,
+          meaning that no cluster can grow to <InlineMath math={"5\\times"} />{" "}
+          it’s original size. For context, the oversampling ratio{" "}
+          <InlineMath math={"(\\rho_c)"} /> is given as
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"\\rho_{c,k} = \\frac{n_c^\\ast}{n_{c,k}}"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where <InlineMath math={"n_{c,k}"} /> is the total number of cluster
+          samples before resampling. Since we are initializing our new effective
+          oversampling cap <InlineMath math={"(\\rho_c^\\ast)"} />, the new
+          tentative cluster size
+          <InlineMath math={"(n_c^{\\ast\\ast})"} /> would then be:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "n_{c,k}^{\\ast\\ast} = \\min\\big(n_c^\\ast, \\; \\rho_{\\max} \\cdot n_{c,k}\\big)"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          This forms our <InlineCode>min_safe</InlineCode> parameter, which acts
+          as the growth cap per cluster, ensuring we balance uniformity with
+          stability. More intuitively, it is the combination of the oversampling
+          cap and the total number of cluster samples given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"n_{c,k}^{\\text{cap}} = \\rho_{max} \\cdot n_{c,k}"}
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The tentative cluster size (what we are aiming for), can then be
+          rewritten as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "n_{c,k}^{\\ast\\ast} \\;=\\; \\min\\!\\big( n_c^\\ast,\\; n_{c,k}^{\\text{cap}} \\big) \\;=\\; \\min\\!\\big( n_c^\\ast,\\; \\rho_{\\max}\\, n_{c,k} \\big)"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          This then forms the foundation for the number of synthetic examples to
+          be interpolated for cluster <InlineMath math={"(c,k)"} /> as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "r_{c,k} \\;=\\; \\max\\!\\big(0,\\; n_{c,k}^{\\ast\\ast} - n_{c,k} \\big)"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          As a general rule of thumb in our case, if the a cluster is already
+          the class maximum, then,{" "}
+          <InlineMath math={"n_{c,k}^{\\ast\\ast}=n_c^\\ast"} /> and{" "}
+          <InlineMath math={"r_{c,k}=0"} /> (indicating no oversampling for the
+          given cluster). While we’re still aiming for homogeneous uniformity,
+          we aren’t aggressively making that happen at the expense of cluster
+          geometry. Instead, we’re imposing a safety valve that respects the
+          natural scale of each cluster, preventing explosive growth of very
+          small clusters that would otherwise destabilize the interpolation
+          process and inject noise.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
           Class Entropy
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
@@ -538,16 +655,6 @@ const recap: RecapModule = {
           ratios.
         </p>
         <div className={getAllowanceClass()}></div>
-        <h2 className={getHeadingClass(2, { responsive: true })}>
-          Synthetic Sample Quality Metrics
-        </h2>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
-          Distance to Real Samples
-        </h3>
-        <p className={getParagraphClass({ responsive: true, muted: false })}>
-          ...
-        </p>
-        <div className={getAllowanceClass()}></div>
         <h3 className={getHeadingClass(3, { responsive: true })}>
           Cluster Preservation
         </h3>
@@ -614,24 +721,9 @@ const recap: RecapModule = {
           is perfect for our use case as it respects the geometry of the
           covariance matrices (cluster shapes, as they are mostly spherical with
           elongated orientations), stable in high dimensions (45D in our case),
-          and fair to both small and large clusters. Mathematically, the LogDet
-          divergence is explained by:
-        </p>
-        <div className={getMathBlockClass()}>
-          <BlockMath
-            math={
-              "\\text{tr}(\\Sigma^{\\text{real}} (\\Sigma^{\\text{syn}})^{-1}\\big) - \\text{logdet}(\\Sigma^{\\text{real}} (\\Sigma^{\\text{syn}})^{-1}\\big) - d"
-            }
-          />
-        </div>
-        <p className={getParagraphClass({ responsive: true, muted: false })}>
-          Where <InlineMath math={"\\Sigma^{\\text{real}}"} /> and{" "}
-          <InlineMath math={"\\Sigma^{\\text{syn}}"} /> are the covariance
-          matrices of the original and resampled cluster ellipsoids
-          respectively, and <InlineMath math={"d"} /> refers to the number of
-          dimensions. Lower values indicate smaller covariance changes,
-          indicating that the cluster ellipsoids didn’t warp that much, which in
-          our case is mostly desirable.
+          and fair to both small and large clusters. Lower values indicate
+          smaller covariance changes, indicating that the cluster ellipsoids
+          didn’t warp that much, which in our case is mostly desirable.
         </p>
         <div className={getAllowanceClass()}></div>
         <h3 className={getHeadingClass(3, { responsive: true })}>
@@ -650,25 +742,25 @@ const recap: RecapModule = {
         <div className={getMathBlockClass()}>
           <BlockMath
             math={
-              "\\Delta d_{c,k}^{\\text{intra}} = \\frac{d_{c,k}^{\\text{intra, syn}} - d_{c,k}^{\\text{intra, real}}}{d_{c,k}^{\\text{intra, real}}}"
+              "\\Delta d_{c,k} = \\frac{d_{c,k}^{\\text{syn}} - d_{c,k}^{\\text{real}}}{d_{c,k}^{\\text{real}}}"
             }
           />
         </div>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
-          Where <InlineMath math={"d_{c,k}^{\\text{intra, real}}"} /> is the
-          average intra-cluster distance before resampling, given as:
+          Where <InlineMath math={"d_{c,k}^{\\text{real}}"} /> is the average
+          intra-cluster distance before resampling, given as:
         </p>
         <div className={getMathBlockClass()}>
           <BlockMath
             math={
-              "d_{c,k}^{\\text{intra, real}} = \\frac{1}{N_{c,k}^{\\text{real}}} \\sum_{i=1}^{N_{c,k}^{\\text{real}}} \\|\\mathbf{x}i - \\mu{c,k}^{\\text{real}}\\|_2"
+              "d_{c,k}^{\\text{real}} = \\frac{1}{N_{c,k}^{\\text{real}}} \\sum_{i=1}^{N_{c,k}^{\\text{real}}} \\|\\mathbf{x}i - \\mu{c,k}^{\\text{real}}\\|_2"
             }
           />
         </div>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
-          And <InlineMath math={"d_{c,k}^{\\text{intra, syn}}"} /> is the
-          average intra-cluster distance, which is the same expression above,
-          but after resampling.
+          And <InlineMath math={"d_{c,k}^{\\text{syn}}"} /> is the average
+          intra-cluster distance, which is the same expression above, but after
+          resampling.
         </p>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           Values near <InlineMath math={"0"} /> indicate that the spread is
@@ -813,23 +905,6 @@ const recap: RecapModule = {
             math={"\\text{CMR}_c = 1 - \\frac{1}{K_c^{\\text{real}}}"}
           />
         </div>
-        <div className={getAllowanceClass()}></div>
-        <h2 className={getHeadingClass(2, { responsive: true })}>
-          Dimensional Adequacy Metrics
-        </h2>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
-          Samples Per Cluster
-        </h3>
-        <p className={getParagraphClass({ responsive: true, muted: false })}>
-          ...
-        </p>
-        <div className={getAllowanceClass()}></div>
-        <h3 className={getHeadingClass(3, { responsive: true })}>
-          Samples Per Dimension
-        </h3>
-        <p className={getParagraphClass({ responsive: true, muted: false })}>
-          ...
-        </p>
         <div className={getAllowanceClass()}></div>
         <h3 className={getHeadingClass(3, { responsive: true })}>
           Cluster Preservation Score (CPS)
@@ -1087,36 +1162,389 @@ const recap: RecapModule = {
           been evaluated.
         </p>
         <div className={getAllowanceClass()}></div>
+        <h2 className={getHeadingClass(2, { responsive: true })}>
+          Synthetic Sample Quality Metrics
+        </h2>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Distance to Real Samples
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The goal here is to assess how close synthetic samples are to actual
+          (real) data points, ensuring that our oversampling procedure doesn’t
+          generate "ghost" points that live in empty space, far from the natural
+          data manifold. This matters because SMOTE interpolates between real
+          neighbors, and ideally, the synthetically generated samples should lie
+          within the same manifold of the real data, but in our high-dimensional
+          case where the samples are sparsely distributed, the interpolation may
+          stretch too far out, creating far less realistic samples. So measuring
+          distances to real samples tell us whether the synthetic samples are
+          well-anchored to the real ones. Let’s denote{" "}
+          <InlineMath math={"\\mathcal{R}_{(c,k)}"} /> as the real samples in
+          cluster <InlineMath math={"(c, k)"} /> class <InlineMath math={"c"} />{" "}
+          as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"\\mathcal{R}_{c,k} = \\{x_1, x_2, \\ldots, x_{n_{c,k}}\\}"}
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          And <InlineMath math={"\\mathcal{S}_{(c, k)}"} /> as the synthetic
+          samples generated for class <InlineMath math={"c"} /> as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"\\mathcal{S}_{c,k} = \\{s_1, s_2, \\ldots, s_{n_{c,k}}\\}"}
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          For each synthetic sample{" "}
+          <InlineMath math={"s \\in \\mathcal{S}_{(c, k)}"} />, the distance to
+          the closest real sample is defined as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"d(s) = \\min_{x \\in \\mathcal{R}_{c,k}} \\| s - x \\|_2"}
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          We would compute and aggregate this measure over all synthetic
+          samples, and summarize the median distance for each cluster{" "}
+          <InlineMath math={"\\rightarrow \\tilde{d}(s)_{(c, k)}"} />. The
+          median is used in this case as it is less-sensitive to the effects of
+          outliers. To contextualize, we would then compare the synthetic–real
+          distances against real–real nearest neighbor distances, where
+          distances to real samples (from real ones) is defined as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "d(x) = \\min_{x’ \\in \\mathcal{R}_{c,k} \\setminus \\{x\\}} \\| x - x’ \\|_2"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          We would then form our “realism” ratio given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "\\text{RR}_c = \\frac{\\tilde{d}(s)_{c,k}}{\\tilde{d}(x)_{c,k}}"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          An <InlineMath math={"\\text{RR}_c \\approx 1"} /> indicates that the
+          synthetics are as close to reals as reals are to each other (which is
+          what we want), an <InlineMath math={"\\text{RR}_c \\gg 1"} />{" "}
+          indicates that the synthetics drift far outside real neighborhoods and
+          an <InlineMath math={"\\text{RR}_c < 1"} /> indicates that the
+          synthetics cluster too tightly on real points (which is a sign of
+          possible duplicate points).
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h2 className={getHeadingClass(2, { responsive: true })}>
+          Dimensional Adequacy Metrics
+        </h2>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Samples Per Dimension
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The goal here is to ensure that each class has sufficient statistical
+          density in the high-dimensional space (45D here) for
+          interpolation-based methods like SMOTE to create meaningful synthetic
+          points. Given that SPC already ensures intra-class meaningfulness at
+          the cluster level, this forms a more global density check per class,
+          making sure that in 45D space, the class isn’t “too thin” for
+          interpolation to make sense in the first place. It is mathematically
+          explained as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"\\text{SPD}_c = \\frac{n_c}{d}"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where <InlineMath math={"n_c"} /> is the number of samples in class{" "}
+          <InlineMath math={"c"} /> and <InlineMath math={"d"} /> is the number
+          of dimensions (<InlineMath math={"45"} /> in our case). So an{" "}
+          <InlineMath math={"\\text{SPD}_c < 1"} /> indicates extreme sparsity,
+          and interpolation is risky,{" "}
+          <InlineMath math={"1 \\leq \\text{SPD}_c \\leq 5"} /> indicates a
+          still fragile spread of examples, with unstable clusters,{" "}
+          <InlineMath math={"\\text{SPD}_c \\geq 5"} /> indicates a moderate
+          spread with fairly meaningful interpolated examples and{" "}
+          <InlineMath math={"\\text{SPD}_c \\geq 10"} /> indicates a strong
+          coverage.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          We’d compute this measure for each class before resampling and flag
+          classes where <InlineMath math={"\\text{SPD} < 5"} /> or{" "}
+          <InlineMath math={"\\text{SPD} < 1"} />, and then recompute this after
+          resampling. Our goal is to lift every class above the safe{" "}
+          <InlineMath math={"\\text{SPD}_c"} /> threshold.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h2 className={getHeadingClass(2, { responsive: true })}>
+          Training Level Optimization
+        </h2>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          With balanced resampling strategies in place, the next bottleneck lies
+          in how classifiers actually learn from this rebalanced data. Standard
+          training procedures tend to disproportionately focus on majority
+          classes, even after resampling, due to statistical dominance. To
+          mitigate this, we introduce training-level optimizations that directly
+          modulate how classifiers treat errors from different classes
+          especially during the training phase.
+        </p>
+        <div className={getAllowanceClass()}></div>
         <h3 className={getHeadingClass(3, { responsive: true })}>
           Baseline Implementation
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
-          With good data established, we would then optimize how the calibrated
-          classifiers learn from it. Basically, we want them to care more about
-          the minority classes, given the already existing statistical dominance
-          of the majority ones. To this effect, we would adopt the same baseline
-          approach, more specifically baseline + built-in CSL techniques.
-          Typical built-in CSL techniques we would adopt are Class Weight
-          Balancing (<InlineCode>class_weight=“balanced”</InlineCode>) across
-          applicable classifiers, XGBoost’s Scale Pos Weight (by{" "}
-          <InlineCode>scale_pos_weight</InlineCode> optimization) and LightGBM’s
-          native <InlineCode>is_unbalanced=True</InlineCode> parameter. As an
-          initial baseline evaluation, we would then measure possible
-          training-level gains or losses.
+          In the baseline setup, we retain the default learning objective but
+          activate built-in cost-sensitive learning (CSL) adjustments provided
+          by the calibrated classifiers.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          For models like Logistic Regression, SVMs, or Random Forests, we
+          enable <InlineCode>class_weight="balanced"</InlineCode>. This
+          automatically scales each class’s contribution to the loss function
+          based on inverse class frequency. In more simpler terms, it gives
+          minority classes “more voice” to the learner.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          For gradient boosting classifiers like the XGBoost in our case, we
+          calibrate the weight of positive (minority) samples relative to
+          negatives within each one-vs-rest classifier, by tweaking the
+          <InlineCode>scale_pos_weight</InlineCode> parameter.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          For the LightGBM classifier, we set the{" "}
+          <InlineCode>is_unbalanced</InlineCode> parameter to
+          <InlineCode>True</InlineCode>, which is a native parameter that
+          rebalances class weights internally during training.
         </p>
         <div className={getAllowanceClass()}></div>
         <h3 className={getHeadingClass(3, { responsive: true })}>
           Advanced Implementation
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
-          ...
+          For more advanced setups, we progressively refine the learning process
+          with the intuition that the baseline implementations only serve as a
+          baseline layer, and that it isn’t enough given our complex
+          multiplicative factors, specifically the class imbalance, overlap and
+          label noise factors.
         </p>
         <div className={getAllowanceClass()}></div>
         <h3 className={getHeadingClass(3, { responsive: true })}>
-          Evaluation Framework
+          Custom Loss Functions
         </h3>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
-          ...
+          We implement more context-aware loss functions, ones that directly
+          tackles the learning hurdles such as Focal Loss, Class-Balanced Loss
+          and Label-Noise Robust Loss.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>Focal Loss</h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Focal Loss, in this context, was introduced to strategically reduce
+          the contributions of dominant majority classes, and then amplifying
+          the contributions of the minority ones, making them more “visible” to
+          the gradient updates during learning. More information about focal
+          loss and its implementation can be found here…
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          This is particularly valuable in our setting where minority classes
+          struggle with scarcity and also inhabit noisy, overlapping decision
+          regions where they are easily overshadowed.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Class-Balanced Loss
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Class-Balanced Loss was implemented to re-weight contributions not
+          just by raw frequency, but by the effective number of samples,
+          ensuring that rarer classes don’t get drowned out, even after our
+          resampling process. The key intuition here is that not all samples
+          contribute the same amount of information. More information about
+          class-balanced loss can be found here…
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          This intuition becomes especially relevant in our case, where a
+          significant fraction of minority examples (especially ones from
+          classes <InlineMath math={"7-9"} />) are extrapolated via SMOTE
+          variants. As synthetic samples accumulate, their marginal contribution
+          diminishes, so they begin to resemble duplicates of existing samples
+          rather than genuinely new information. If we weighted purely by
+          frequency, these “extra” samples could distort the balance.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Instead, the effective number of samples reflects the information
+          content of a class rather than its raw size, so the first few samples
+          of a class are the most informative. Beyond that, additional samples
+          (especially synthetic ones) add progressively less information. This
+          also denotes that before resampling, minority classes contributed
+          highly refined and informative samples, while after resampling they
+          become a mix of informative and less informative ones, and
+          Class-Balanced Loss is designed to focus on the former, preventing the
+          synthetic data growth from overwhelming the signal.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Label-Noise Robust Loss
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Here, our aim is to directly tackle label noise by reducing the impact
+          of mislabeled samples, and this is especially critical in class
+          clusters where <InlineMath math={"2\\%"} /> noise can corrupt the
+          entire local region. To address this, we implement a variant of the
+          vanilla cross entropy loss which is the Generalized Cross Entropy
+          (GCE). More information about GCE can be found in my notes here…
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The major principle behind GCE is that traditional cross-entropy (CCE
+          in our case) treats every misclassification equally, regardless of how
+          confident or uncertain the model is, and then mislabeled samples can
+          exert a disproportionately larger influence, basically pulling the
+          model in the wrong direction. GCE modifies this by introducing a
+          tunable parameter that controls the sensitivity of the loss to
+          low-probability predictions. So basically, the loss behaves more like
+          MAE for noisy (mislabeled) samples (less sensitivity thereby reducing
+          their weight), while still implementing CE for cleaner, well-labeled
+          ones (stronger learning signal). In essence, the classifier
+          effectively learns from more reliable samples while down-weighting
+          ones that are likely to be mislabeled.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Even though one of our resampling evaluation checks specifically
+          mitigates against label noise (cluster purity to be precise), we still
+          want to make sure that any residual noise that slips through does not
+          derail the learning process.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Positioning of Loss Functions
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          It is important to clarify that the loss functions we described:
+          Class-Balanced Loss, Focal Loss, and Label-Noise Robust Loss (GCE) are
+          not comparative against the evaluation frameworks, nor are they
+          mutually exclusive. Instead, they should be seen as additive
+          mechanisms, each designed to counteract a different part of the
+          multiplicative complexity in our dataset:
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Class-Balanced Loss addresses the extreme imbalance by correcting for
+          the diminishing information contribution of synthetic or possibly
+          duplicated samples
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Focal Loss addresses overlap and dominance effects, by strategically
+          down-weighting easy majority examples and sharpening the learning
+          signal around harder or minority-driven ones.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Label-Noise Robust Loss (GCE) addresses contamination within clusters,
+          ensuring that mislabeled or corrupted samples don’t disproportionately
+          derail learning.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Integration Strategy
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          To integrate them, we’d implement a composite loss framework, where
+          the base loss is a cross-entropy loss, and additive components are
+          layered on top. We’d begin with the class-balanced loss to establish a
+          fair gradient distribution across classes from the start. Then
+          gradually introduce focal loss as training stabilizes, so that
+          minority clusters in overlap regions are given amplified focus without
+          destabilizing early convergence. Finally, we’d apply GCE as a
+          correctional layer throughout, but especially impactful in later
+          epochs, to down-weight corrupted or mislabeled outliers.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          We would then define a joint loss in the form of:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "\\mathcal{L} = \\alpha \\cdot \\mathcal{L}_1 + \\beta \\cdot \\mathcal{L}_2 + \\gamma \\cdot \\mathcal{L}_3"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where <InlineMath math={"\\mathcal{L}_1"} />,{" "}
+          <InlineMath math={"\\mathcal{L}_2"} /> and{" "}
+          <InlineMath math={"\\mathcal{L}_3"} /> are the outlined loss
+          functions, and <InlineMath math={"\\alpha"} />,{" "}
+          <InlineMath math={"\\beta"} /> and <InlineMath math={"\\gamma"} /> are
+          the coefficients tuned based on validation feedback.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Curriculum Learning + Dynamic Sampling
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Curriculum Learning introduces the idea that the order in which
+          training samples are presented matters, so instead of exposing the
+          model to the full complexity of the dataset from the very beginning,
+          we sequence the learning process, in this case, starting with easier,
+          cleaner patterns and gradually introducing harder ones.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Given our current context, if we force our calibrated classifiers to
+          resolve noisy overlaps and sparsely represented minority regions at
+          the first epoch, the learning process could collapse into majority
+          dominance or possibly noise memorization.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          So to this effect, we’d implement a learning “curriculum” where we
+          tackle cluster cleanliness (purity) first, by beginning training on
+          clusters with high purity (low contamination, minimal overlap) as they
+          provide stable patterns that allow the classifier to form a foundation
+          without being distorted by mislabeled points, then progressively
+          introduce class overlap, where we introduce clusters that live in
+          overlap regions where decision boundaries are more ambiguous, as it
+          prevents the model from prematurely overfitting to conflicting signals
+          before it has stable representations of cleaner ones, and then finally
+          resolve noise-weighted samples, where we include mislabeled or noisy
+          samples, but apply explicit loss weighting (via GCE) so they do not
+          destabilize learned patterns.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Noticeably, the curriculum learning approach completely mirrors the
+          custom loss function implementations, and sort of creates a defined
+          ordering principle for how and how well they are implemented. For more
+          context, the focal loss is more beneficial once the model has learned
+          the basics of the easy cases, while GCE provides correctional checks
+          in the final stages when noisy samples are fully integrated.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          At each training epoch at every stage of the curriculum, we would then
+          implement the dynamic sampling procedure, where we adjust the sampling
+          probabilities so the minority classes appear more frequently and in
+          mini-batches, but without forcing hard uniformity. This is done by
+          probabilistically boosting the representation of minority samples per
+          epoch, in this case, proportional to inverse-frequency. For context,
+          the inverse frequency flips the intuition of representing higher
+          sampling probabilities to classes that appear more often to less
+          occurring ones, given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"p_k \\propto \\frac{1}{n_k}"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where <InlineMath math={"p_k"} /> is the probability of drawing a
+          sample from class <InlineMath math={"k"} /> and{" "}
+          <InlineMath math={"n_k"} /> is the number of samples in class{" "}
+          <InlineMath math={"k"} />. More info on inverse frequency can be found
+          here ….
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          So in early epochs, it’ll favor stability and clean representations,
+          while in later epochs it incrementally compensates for minority
+          scarcity in overlap/noisy regions.
         </p>
         <div className={getAllowanceClass()}></div>
         <h2 className={getHeadingClass(2, { responsive: true })}>

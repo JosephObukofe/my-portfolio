@@ -4,6 +4,7 @@ import * as React from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { TransitionLink } from "@/app/components/PageTransition";
 import { StatusBadge } from "./status-badge";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -208,7 +209,7 @@ export function WeeklyRecapList({
       <AnimatePresence mode="wait">
         <motion.div
           key={currentPage}
-          className="space-y-4 min-h-[280px]"
+          className="space-y-4 min-h-[320px]"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -232,13 +233,13 @@ export function WeeklyRecapList({
 
               {/* Description Column - Right Aligned with Link */}
               <div className="flex justify-end ml-6 sm:ml-8">
-                <Link
+                <TransitionLink
                   href={`/learning/recap/${week.slug}`}
                   className="inline-flex items-center gap-2 text-[0.75rem] sm:text-[0.85rem] font-satoshi text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors duration-150 text-right"
                 >
                   <span>{week.description}</span>
                   <ArrowUpRight className="w-3 h-3 flex-shrink-0" />
-                </Link>
+                </TransitionLink>
               </div>
             </motion.div>
           ))}

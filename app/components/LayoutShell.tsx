@@ -1,14 +1,17 @@
+// components/LayoutShell.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { TransitionLink } from "@/app/components/PageTransition";
 import DigitalTime from "./DigitalTime";
 import Logo from "./Logo";
 import { getButtonClass } from "@/utils/typography";
 import { Copyright } from "./ui/Copyright";
 import HomepageQuote from "./HomePageQuote";
 import { useMenu } from "./MenuProvider";
+import { usePageTransition } from "./PageTransitionProvider";
 
 export default function LayoutShell({
   children,
@@ -16,8 +19,9 @@ export default function LayoutShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { toggleMenu, isMenuOpen } = useMenu(); // 👈 Get menu state
+  const { toggleMenu, isMenuOpen, isMenuClosing } = useMenu(); // Add isMenuClosing here
   const isHomepage = pathname === "/";
+  const { transitionStage } = usePageTransition();
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Animation states for homepage load sequence
@@ -37,41 +41,56 @@ export default function LayoutShell({
   }, []);
 
   // Homepage animation sequence
+  // Replace your existing homepage animation useEffect with this:
   useEffect(() => {
+    // Check if homepage loading is active
+    const loadingElement = document.getElementById("homepage-loading-active");
+    const isLoadingActive =
+      loadingElement?.getAttribute("data-loading") === "true";
+
+    if (isHomepage && isLoadingActive) {
+      // Loading animation is active - don't start LayoutShell animations
+      setIsPageLoaded(false);
+      setShowQuote(false);
+      setShowTopElements(false);
+      setShowBottomElements(false);
+      return;
+    }
+
+    // Your existing homepage animation logic...
     if (isHomepage) {
-      // Reset all states when entering homepage
+      if (transitionStage !== "idle") {
+        setIsPageLoaded(false);
+        setShowQuote(false);
+        setShowTopElements(false);
+        setShowBottomElements(false);
+        return;
+      }
+
       setIsPageLoaded(false);
       setShowQuote(false);
       setShowTopElements(false);
       setShowBottomElements(false);
 
-      // Start the animation sequence - much snappier timing
       const timeouts = [
-        // Step 1: Page loads with background (immediate)
         setTimeout(() => setIsPageLoaded(true), 50),
-
-        // Step 2: Quote fades in (after 300ms)
-        setTimeout(() => setShowQuote(true), 300),
-
-        // Step 3: Top elements fade in (after 600ms)
-        setTimeout(() => setShowTopElements(true), 600),
-
-        // Step 4: Bottom elements fade in (after 900ms)
-        setTimeout(() => setShowBottomElements(true), 900),
+        setTimeout(() => setShowQuote(true), 150),
+        setTimeout(() => {
+          setShowTopElements(true);
+          setShowBottomElements(true);
+        }, 700),
       ];
 
-      // Cleanup timeouts on unmount or route change
       return () => {
         timeouts.forEach((timeout) => clearTimeout(timeout));
       };
     } else {
-      // For non-homepage routes, show everything immediately
       setIsPageLoaded(true);
       setShowQuote(true);
       setShowTopElements(true);
       setShowBottomElements(true);
     }
-  }, [isHomepage, pathname]);
+  }, [isHomepage, pathname, transitionStage]);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -127,16 +146,33 @@ export default function LayoutShell({
   }, [isMenuOpen]);
 
   // Animation classes for smooth transitions
-  const fadeInClass = "transition-all duration-500 ease-out";
+  const fadeInClass = "transition-all duration-500 ease-in-out";
+
+  // Updated to consider isMenuClosing
   const getQuoteOpacity = (shouldShow: boolean) =>
-    shouldShow ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4";
-  const getCornerElementOpacity = (
+    shouldShow && !isMenuOpen && !isMenuClosing
+      ? "opacity-100 translate-y-0"
+      : "opacity-0 translate-y-4";
+
+  // Updated visibility function to consider isMenuClosing
+  const getElementVisibility = (
     shouldShow: boolean,
-    hideWhenMenuOpen = false
-  ) =>
-    shouldShow && (!hideWhenMenuOpen || !isMenuOpen)
-      ? "opacity-100"
-      : "opacity-0"; // 👈 Hide when menu is open
+    hideWhenMenuOpen = false,
+    hideOnMobileHomepage = false
+  ) => {
+    // Hide when menu is open OR closing (this keeps content hidden during exit)
+    if (hideWhenMenuOpen && (isMenuOpen || isMenuClosing)) return "opacity-0";
+
+    // Hide on mobile homepage (if specified) - show on desktop, hide on mobile
+    if (hideOnMobileHomepage && isHomepage) {
+      return shouldShow && !isMenuClosing
+        ? "opacity-0 lg:opacity-100"
+        : "opacity-0";
+    }
+
+    // Normal visibility - but respect the closing state
+    return shouldShow && !isMenuClosing ? "opacity-100" : "opacity-0";
+  };
 
   return (
     <div
@@ -160,65 +196,63 @@ export default function LayoutShell({
         `}
       />
 
-      {/* TOP LEFT - Logo (Desktop: Fixed Corner, Mobile: Fixed Top) */}
-      <Link
+      {/* TOP LEFT - Logo (Desktop: Always show, Mobile: Hide on homepage only) */}
+      <TransitionLink
         href="/"
         className={`
           fixed top-8 left-8 z-50 cursor-pointer
           ${fadeInClass}
-          ${getCornerElementOpacity(showTopElements, true)}
+          ${getElementVisibility(showTopElements, true, true)}
         `}
       >
         <div className="text-[#212121] dark:text-[#FDFFF5] transition-opacity hover:opacity-70">
           <Logo />
         </div>
-      </Link>
+      </TransitionLink>
 
-      {/* TOP RIGHT - Menu Button (Desktop: Fixed Corner, Mobile: Fixed Top) */}
+      {/* TOP RIGHT - Menu Button (Always visible - the hero of mobile homepage!) */}
       <div
         className={`
         fixed top-8 right-8 z-[60] flex items-center gap-4
         ${fadeInClass}
-        ${getCornerElementOpacity(showTopElements)}
+        ${getElementVisibility(showTopElements, false, false)}
       `}
       >
         <button
           onClick={toggleMenu}
           className={`${getButtonClass({
-            muted: isMenuOpen, // Put this back
+            muted: isMenuOpen,
             bold: false,
             font: "satoshi",
-          })} sm:hover:!text-foreground`} // Use !important to override muted state on hover
+          })} sm:hover:!text-foreground`}
         >
           Menu
         </button>
       </div>
 
-      {/* BOTTOM LEFT - Copyright (Desktop: Fixed Corner, Mobile: Footer) - 👈 Fades when menu opens */}
+      {/* BOTTOM LEFT - Copyright (Desktop: Always show, Mobile: Hide on homepage only) */}
       <div
         className={`
           fixed bottom-8 left-8 z-50 hidden lg:block
           ${fadeInClass}
-          ${getCornerElementOpacity(showBottomElements, true)} 
+          ${getElementVisibility(showBottomElements, true, true)} 
         `}
       >
         <Copyright variant="muted" />
       </div>
 
-      {/* BOTTOM RIGHT - Date/Time (Desktop: Fixed Corner, Mobile: Footer) - 👈 Fades when menu opens */}
+      {/* BOTTOM RIGHT - Date/Time (Desktop: Always show, Mobile: Hide on homepage only) */}
       <div
         className={`
-          fixed bottom-8 right-8 z-50 hidden lg:block
-          ${fadeInClass}
-          ${getCornerElementOpacity(showBottomElements, true)}
-        `}
+        fixed bottom-8 right-8 z-50 hidden lg:block
+        ${fadeInClass}
+        ${getElementVisibility(showBottomElements, true, true)}
+      `}
       >
-        <div className="text-sm">
-          <DigitalTime />
-        </div>
+        <DigitalTime />
       </div>
 
-      {/* CENTER - Homepage Quote (Visually centered, accounting for footer weight) - 👈 Fades when menu opens */}
+      {/* CENTER - Homepage Quote (Fades when menu opens, always visible when menu closed) */}
       {isHomepage && (
         <div
           className={`
@@ -253,20 +287,18 @@ export default function LayoutShell({
         </div>
       </main>
 
-      {/* Mobile Footer - Different positioning for homepage - 👈 Fades when menu opens */}
+      {/* Mobile Footer - Hide on mobile homepage, show on other pages */}
       <footer
         className={`
           ${isHomepage ? "fixed bottom-0 left-0 right-0" : ""} 
           flex justify-between items-center px-8 pb-8 lg:hidden
           ${isHomepage ? "flex-shrink-0" : ""}
           ${fadeInClass}
-          ${getCornerElementOpacity(showBottomElements, true)}
+          ${getElementVisibility(showBottomElements, true, true)}
         `}
       >
         <Copyright variant="muted" />
-        <div className="text-sm">
-          <DigitalTime />
-        </div>
+        <DigitalTime />
       </footer>
     </div>
   );

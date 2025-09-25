@@ -99,8 +99,10 @@ export default function CustomCursor({ className = "" }: CustomCursorProps) {
     // 🆕 FIX: Get initial mouse position instead of setting visibility immediately
     // This prevents the cursor from showing at (0,0) before first mouse movement
     const getInitialMousePosition = (e: MouseEvent) => {
-      mouseX.set(e.clientX - 8);
-      mouseY.set(e.clientY - 8);
+      mouseX.jump(e.clientX - 8); // Instantly positions at mouse location
+      mouseY.jump(e.clientY - 8);
+      springX.jump(e.clientX - 8); // Also position springs to prevent animation
+      springY.jump(e.clientY - 8);
       setHasInitialPosition(true);
       setIsVisible(true);
 

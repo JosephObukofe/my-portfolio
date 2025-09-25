@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { UnderlineLink } from "@/app/components/ui/underline-link";
+import { TransitionLink } from "@/app/components/PageTransition";
 import {
   getHeadingClass,
   getParagraphClass,
@@ -95,9 +96,9 @@ export default function LearningPage() {
     >
       <div className={getPageAllowanceClass({ axis: "py" })}></div>
       <h3 className={getHeadingClass(3, { responsive: true })}>
-        <UnderlineLink href="/learning/materials">
-          Learning Materials
-        </UnderlineLink>
+        <TransitionLink href="/learning/materials">
+          <UnderlineLink>Learning Materials</UnderlineLink>
+        </TransitionLink>
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         I’ve always had this terrible habit of hoarding resource links that I
@@ -108,26 +109,24 @@ export default function LearningPage() {
         (depth).
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        I believe that focusing on depth, especially in the fundamentals of
+        I believe that focusing on this depth, especially in the fundamentals of
         anything you want to learn, helps to clear out the noise and gives you a
         bit of added confidence. Painfully slower, yes, but it sticks. In my
         case, I use this section as a central repo for any resource that sticks
         around long enough to be useful more than once.
       </p>
-      <p className={getParagraphClass({ responsive: true, muted: true })}>
-        If you’re a learner like me — obsessive and possibly chaotically
-        unstructured — then maybe this section would help you too.
-      </p>
-      <div className={getPageAllowanceClass({ axis: "py" })}></div>
+      <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
-        <UnderlineLink href="/learning/recap">Weekly Recaps</UnderlineLink>
+        <TransitionLink href="/learning/recap">
+          <UnderlineLink>Weekly Recaps</UnderlineLink>
+        </TransitionLink>
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        These are my mini blog-style retrospectives, and I use them to reflect
-        on what I explored, and particularly where I got stuck. This section, in
-        many ways, is more or less what this entire site really is, which is a
-        weekly-logged reflection of my learning journey. It also helps me pause
-        and track how far I’ve come.
+        These are my mini research-style retrospectives, and I use them to
+        reflect on what I explored, and particularly where I got stuck. This
+        section, in many ways, is more or less what the point of this entire
+        site is really, which is a weekly-logged reflection and record of my
+        learning journey. It also helps me pause and track how far I’ve come.
       </p>
     </section>
   );

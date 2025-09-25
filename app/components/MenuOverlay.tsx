@@ -21,31 +21,6 @@ const socialLinks = [
   { name: "Email", href: "mailto:obukofeuririoghenejoseph@gmail.com" },
 ];
 
-// Overlay background variants
-const overlayVariants = {
-  hidden: {
-    opacity: 0,
-    backdropFilter: "blur(0px)",
-  },
-  visible: {
-    opacity: 1,
-    backdropFilter: "blur(8px)",
-    transition: {
-      duration: 0.4,
-      ease: "easeOut",
-    },
-  },
-  exit: {
-    opacity: 0,
-    backdropFilter: "blur(0px)",
-    transition: {
-      duration: 0.6,
-      ease: "easeIn",
-      delay: 0.4,
-    },
-  },
-};
-
 // Container variants - orchestrates the overall timing INCLUDING theme toggle
 const containerVariants = {
   hidden: {},
@@ -272,6 +247,55 @@ export default function MenuOverlay() {
 
   // Check if user is on home page
   const isOnHomePage = pathname === "/";
+
+  const overlayVariants = isOnHomePage
+    ? {
+        // Home page variants - NO blur at all
+        hidden: {
+          opacity: 0,
+          backdropFilter: "blur(0px)",
+        },
+        visible: {
+          opacity: 1,
+          backdropFilter: "blur(0px)", // Keep it at 0px for home page
+          transition: {
+            duration: 0.4,
+            ease: "easeOut",
+          },
+        },
+        exit: {
+          opacity: 0,
+          backdropFilter: "blur(0px)", // Still 0px on exit
+          transition: {
+            duration: 0.4, // Match the entry duration
+            ease: "easeOut", // Match the entry easing
+          },
+        },
+      }
+    : {
+        // Other pages variants - WITH blur effect
+        hidden: {
+          opacity: 0,
+          backdropFilter: "blur(0px)",
+        },
+        visible: {
+          opacity: 1,
+          backdropFilter: "blur(8px)", // Nice blur for other pages
+          transition: {
+            duration: 0.4,
+            ease: "easeOut",
+          },
+        },
+        exit: {
+          opacity: 0,
+          backdropFilter: "blur(0px)",
+          transition: {
+            duration: 0.4, // Match the entry duration
+            ease: "easeOut", // Match the entry easing
+            delay: 0.6,
+          },
+        },
+      };
 
   // Handle clicking outside the menu content areas
   const handleBackgroundClick = (e: React.MouseEvent) => {

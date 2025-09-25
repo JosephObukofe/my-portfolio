@@ -1,3 +1,4 @@
+// layout.tsx - Fixed provider hierarchy
 import "./global.css";
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
@@ -19,6 +20,10 @@ import MenuOverlay from "./components/MenuOverlay";
 import SmoothScroll from "./components/SmoothScroll";
 import Cursor from "./components/Cursor";
 
+// Dashboard components
+import { DashboardOverlay } from "./components/DashboardOverlay";
+
+// Keep all your existing metadata exactly the same
 export const metadata: Metadata = {
   title: {
     default: "Obukofe Joseph",
@@ -160,14 +165,19 @@ export default function RootLayout({
             <MenuProvider>
               <Cursor />
               <SmoothScroll />
-              <LayoutShell>
-                <PageTransition>{children}</PageTransition>
-                <Analytics />
-                <SpeedInsights />
-              </LayoutShell>
+              <PageTransition>
+                {" "}
+                {/* ← Moved here to wrap LayoutShell */}
+                <LayoutShell>
+                  {children} {/* ← Children moved up one level */}
+                  <Analytics />
+                  <SpeedInsights />
+                </LayoutShell>
+              </PageTransition>
               <MenuOverlay />
             </MenuProvider>
           </PageTransitionProvider>
+          <DashboardOverlay />
         </ThemeProvider>
       </body>
     </html>

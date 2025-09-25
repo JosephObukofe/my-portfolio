@@ -89,8 +89,8 @@ export const typography = {
         sm: "text-[1.05rem]",
       },
       leading: {
-        base: "leading-[1.3]",
-        sm: "leading-[1.3]",
+        base: "leading-[1.95]",
+        sm: "leading-[1.95]",
       },
     },
     h2: {
@@ -99,8 +99,8 @@ export const typography = {
         sm: "text-[0.95rem]",
       },
       leading: {
-        base: "leading-[1.3]",
-        sm: "leading-[1.3]",
+        base: "leading-[1.95]",
+        sm: "leading-[1.95]",
       },
     },
     h3: {
@@ -109,8 +109,8 @@ export const typography = {
         sm: "text-[0.85rem]",
       },
       leading: {
-        base: "leading-[1.3]",
-        sm: "leading-[1.3]",
+        base: "leading-[1.95]",
+        sm: "leading-[1.95]",
       },
     },
   },

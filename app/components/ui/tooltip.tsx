@@ -70,7 +70,7 @@ export function Tooltip({
           className={className}
           style={{
             ...style,
-            padding: "0.75rem 1rem",
+            padding: "0.625rem 1rem", // Slightly reduced top/bottom padding
             borderRadius: "0.75rem",
             backgroundColor: style?.backgroundColor ?? "#1f2937",
             minWidth: "fit-content",
@@ -81,7 +81,7 @@ export function Tooltip({
           {/* Month/Label Header */}
           {formattedLabel && (
             <div
-              className="text-[0.65rem] sm:text-[0.75rem] font-grotesk font-semibold mb-3 text-left"
+              className="text-[0.65rem] sm:text-[0.75rem] font-grotesk font-semibold mb-2 text-left" // Reduced from mb-3 to mb-2
               style={{ color: style?.color }}
             >
               {formattedLabel}
@@ -94,7 +94,7 @@ export function Tooltip({
               {/* Vertical hash bar spanning both rows */}
               <div className="flex flex-col justify-center">
                 <div
-                  className="w-1 h-8 relative overflow-hidden rounded-sm"
+                  className="w-1 h-7 relative overflow-hidden rounded-sm" // Reduced from h-8 to h-7
                   style={{ backgroundColor: "transparent" }}
                 >
                   {/* Green hash pattern matching area chart */}
@@ -114,7 +114,9 @@ export function Tooltip({
               </div>
 
               {/* Content rows */}
-              <div className="space-y-1.5 flex-1">
+              <div className="space-y-1 flex-1">
+                {" "}
+                {/* Reduced from space-y-1.5 to space-y-1 */}
                 {/* Metric Row */}
                 <div className="flex items-center justify-between gap-6">
                   <span
@@ -130,7 +132,6 @@ export function Tooltip({
                     {metricName || payload[0].name || payload[0].dataKey}
                   </span>
                 </div>
-
                 {/* Value Row */}
                 <div className="flex items-center justify-between gap-6">
                   <span

@@ -9,6 +9,7 @@ import {
 } from "@/utils/typography";
 import Link from "next/link"; // Import Link
 import { UnderlineLink } from "@/app/components/ui/underline-link";
+import { TransitionLink } from "@/app/components/PageTransition";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -93,8 +94,8 @@ export default function AboutPage() {
         Hi there,
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        I’m Joe (@obukofejoe), a data scientist, gamer and a full-time selective
-        yapper living in Lagos, Nigeria. I’m currently at PremiumTrust Bank as a
+        I'm Joe (@obukofejoe), a data scientist, gamer and a full-time selective
+        yapper living in Lagos, Nigeria. I'm currently at PremiumTrust Bank as a
         Data Scientist - Product and doing my masters at the University of
         Stirling, Scotland.
       </p>
@@ -104,48 +105,48 @@ export default function AboutPage() {
         Hi — again.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        If there’s one thing that really anchors how I live and learn, it’s a
+        If there's one thing that really anchors how I live and learn, it's a
         phrase I hold close:
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        <i>Poco a Poco</i>, meaning <i>“Little by Little”</i> in Spanish.
+        <i>Poco a Poco</i>, meaning <i>"Little by Little"</i> in Spanish.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        This alone is my whole damn way of moving through life, and it’s more or
-        less how I intentionally think about growth, and how I learn. It’s also
+        This alone is my whole damn way of moving through life, and it's more or
+        less how I intentionally think about growth, and how I learn. It's also
         how I choose to build, with intention, in extremely fine granularity and
         piece by piece, with less noise and more signal.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        But here’s the thing, I’m still learning. I didn’t always know how to do
-        “little by little.” For years, I’d throw myself headfirst into seemingly
-        important stuff, consuming everything at once, burning out while at it,
-        then wondering why I felt hollow afterward. I remember spending months
-        trying to understand every aspect of machine learning, barely getting
-        enough sleep, only to realize I couldn’t actually build anything
-        meaningful with all that scattered knowledge. That’s when poco a poco
+        But here's the thing, I'm still learning. I didn't always know how to do
+        "little by little." For years, I'd throw myself headfirst into seemingly
+        important stuff, consuming everything all at once, burning out while at
+        it, then wondering why I felt hollow afterward. I remember spending
+        months trying to understand every aspect of machine learning, barely
+        getting enough sleep, only to realize I couldn't actually build anything
+        meaningful with all that scattered knowledge. That's when poco a poco
         stopped being just a nice phrase and started becoming an actual survival
         strategy.
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
-        I don’t like doing things on the surface.
+        I don't like doing things on the surface.
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        While I’m not repulsed by it, it’s also something I constantly try not
+        While I'm not repulsed by it, it's also something I constantly try not
         to do whenever I get the chance to, and not also because I think depth
-        is always better, but because I simply can’t help but to go there. I get
+        is always better, but because I simply can't help but to go there. I get
         extremely fidgety around things that feel too shallow or half-baked,
-        whether it’s a function, or something as simple as a thought or even
+        whether it's a function, or something as simple as a thought or even
         something as nuanced as star formation. My way of moving through with it
         is to comprehensively understand it from the inside out, not out of the
         need for perfectionism, but because I absolutely care enough to know.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        But there’s a part of me I’m learning to embrace, and it is that depth
-        doesn’t mean overdoing, but rather being intentional, honest, and
-        possibly structured when it makes sense, and maybe a tad understandably
-        chaotic if it doesn’t.
+        But there's a part of me I'm learning to embrace, and it is that depth
+        doesn't mean overdoing, but rather being intentional and possibly
+        structured when it makes sense, and maybe a tad understandably chaotic
+        if it doesn't.
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
@@ -153,21 +154,21 @@ export default function AboutPage() {
         part of what drives my need for depth.
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        It’s crowded and overstimulating, and everyone’s always either
+        It's crowded and overstimulating, and everyone's always either
         optimizing, scaling, or shipping stuff and it gets hard to breathe
-        sometimes, harder to focus if even. Don’t even get me started on the
-        doomscrolling, but the really weird (and maybe relatable) thing about it
-        is that I love being deep in the chaos. There’s something oddly
-        reassuring about carving your own personal corner of the internet that
-        feels “you”, with zero pressure and all-in presence.
+        sometimes, harder to focus if even. Don't even get me started on the
+        whole doomscrolling stuff, but the really weird (and maybe relatable)
+        thing about it is that I love being deep in the chaos. There's something
+        oddly reassuring about carving your own personal corner of the internet
+        that feels "you", with zero pressure and all-in presence.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        This site is precisely that for me. A slow, zero-pressure archive that’s
-        all part me, a log of everything and anything I deeply care about, put
-        together with mini-batches of hard-earned clarity. I built this because
-        I needed a place where I could come back and remember how much I’ve
-        grown, and not just that I simply did. Where I could trace the messy,
-        non-linear path from who I was to who I’m becoming.
+        This site is precisely that for me. A slow, zero-pressure archive that's
+        all part me, a digital log of everything and anything I deeply care
+        about, put together with mini-batches of hard-earned clarity. I built
+        this because I needed a place where I could come back and remember how
+        much I've grown, and where I could trace the messy, non-linear path from
+        who I was to who I'm becoming.
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
@@ -175,92 +176,93 @@ export default function AboutPage() {
         terrifying.
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        I make my own roadmaps, decide what to learn, and worry less about the
-        “what for”. I would definitely be meticulous, but not always methodical
-        about it. Although I try, I firmly believe in wandering sometimes too.
+        I make my own roadmaps, decide what to learn, how to learn it, and worry
+        less about the "what for". I would definitely be meticulous, but not
+        always methodical about it. Although I try, I firmly believe in
+        wandering sometimes too.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         I think structure can be a double-edged sword, helpful yes, but also
-        stifling. Most times, my best learning journeys didn’t come from perfect
-        plans but from getting completely lost in something I didn’t fully
-        understand, but still following it anyways.
+        stifling sometimes. Most times, my best learning journeys didn't come
+        from perfect plans but from getting completely lost in something I
+        didn't fully understand, but still following it anyways.
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
         I strongly believe obsession beats discipline.
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        I know it’s not a popular take in the era of hustle and productivity
-        culture, but for me, obsession isn’t always about burnout, but the joy
-        that comes with it. I’ve done some of my best work not because I was
-        told to, but mainly because I couldn’t not do it.
+        I know it's not a popular take in the era of hustle and productivity
+        culture, but for me, obsession isn't always about burnout, but the joy
+        that comes with it. I've done some of my best work not because I was
+        told to, but mainly because I couldn't not do it.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        That’s why I’ll always choose learning what truly excites me over what’s
-        trendy. It’s not exactly discipline but something much more primal.
+        That's why I'll always choose learning what truly excites me over what's
+        trendy. It's not exactly discipline but something much more primal.
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
-        I am painfully reminded of the fact that I am a slow learner
+        I am painfully reminded of the fact that I am a slow learner.
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        I constantly go over the same lessons, repeat the same mistakes, and
-        need far more time than I’d like to finally “get it.” And I get super
-        jealous of people who can just breeze through new concepts as if their
-        minds were wired differently (which might be the case), as for the
-        longest time, I always prioritized breadth over depth. But I’ve also
-        come to feel that it’s a pretty underrated superpower. Being “slow”
-        forces me to be deliberate. It means that when something sticks, it
-        really sticks. It also allows me to work things out at my own pace, and
-        truthfully, I’m slow at almost everything in life, not just in learning.
-        I eat slowly, I process slowly, I even walk slower than most people I
-        know. It used to frustrate me, because in a world that worships speed,
-        being slow feels like being left behind.
+        I constantly go over the same lessons and need far more time than I'd
+        like to finally "get it." And I get super jealous of people who can just
+        breeze through new concepts as if their minds were wired differently
+        (which might be the case), as for the longest time, I always prioritized
+        breadth over depth. But I've also come to feel that it's a pretty
+        underrated superpower. Being "slow" forces me to be deliberate. It means
+        that when something sticks, it really sticks. It also allows me to work
+        things out at my own pace, and truthfully, I'm slow at almost everything
+        in life, not just in learning. I eat slowly, I process slowly, I even
+        walk slower than most people I know. It used to frustrate me, because in
+        a world that worships speed, being slow feels like being left behind.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         And in a strange way, well much like my absolute disdain for coffee and
-        mechanical keyboards, I’ve kind of made peace with it. The older I got,
+        mechanical keyboards, I've kind of made peace with it. The older I got,
         the more I realized that being slow is just another way of being
         present. It gives me space and time to notice details others overlook,
         and to let things settle instead of rushing past them.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        Maybe that’s all the point: the things that make me different are the
-        same things that make me, me basically.
+        Maybe that's all the point really: the things that make me different are
+        the same things that make me, me basically.
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
-        Function over Form
+        Function over Form.
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         For some compelling reason, this is something I always keep coming back
-        to. I’ve never been the guy obsessed with appearances for their own
-        sake: the shine, the polish, and all the flashy stuff. For me, if
-        something doesn’t work, it really doesn’t matter how beautiful it looks.
-        A tool should be useful before it’s aesthetic, as a principle should be
-        lived before it’s performed.
+        to. I've never been the guy obsessed with appearances for their own
+        sake: the shine and all the flashy stuff. For me, if something doesn't
+        work, it really doesn't matter how beautiful it looks. A tool should be
+        useful before it's aesthetic, as a principle should be lived before it's
+        performed.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        Maybe that’s precisely why I don’t mind being slow to learn, as it
-        forces me to prioritize function. I learn not because I want to show
-        off, but because I can use it effectively when the time comes.
+        Maybe that's precisely why I don't mind being slow to learn, as it
+        forces me to prioritize function, and I do that not because I want to
+        show off in any way, but because I can use it effectively when the time
+        comes (or purely out of the need for curiosity and obsession).
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
-        I’m not trying to be meticulously perfect, I'm just trying to pay
+        I'm not trying to be meticulously perfect, I'm just trying to pay
         attention.
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         Pay attention to the way I work, the way I learn and think. I try not to
         get caught up in optimizing for speed or following the trend train, but
         to stay in love with the process I chose. Some days that means spending
-        hours perfecting a single function, other days it’s loosely sketching
-        out half-formed ideas and letting them percolate.
+        hours optimizing a process, other days it's loosely sketching out
+        half-formed ideas and letting them percolate as much as they can.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        What I’m still figuring out is how to trust my own timing. How to know
-        when I’m being thorough versus when I’m just procrastinating with
-        research.
+        What I'm still figuring out though is how to trust my own timing, and
+        how to know when I'm being thorough versus when I'm just procrastinating
+        with research.
       </p>
       <p className={getAllowanceClass({ axis: "py" })}></p>
       <h3 className={getHeadingClass(3, { responsive: true })}>
@@ -268,24 +270,31 @@ export default function AboutPage() {
       </h3>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         Not of things in the material sense, but of stuff I find either
-        intriguing or compelling. It could be a brutalist building, an
-        engineering marvel or a well designed fit.
+        intriguing or compelling. It could be a brutalist building or a well
+        designed fit.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        That’s what Catalog is for, and it’s my personal living archive of
-        beautiful, odd, and stuff I term to be meaningful. It’s also where I
-        keep the things that taught me something, even if I can’t always
-        articulate what that something is. You’d probably learn more about how
-        my mind works by browsing through it than by reading this monologue.
+        That's what{" "}
+        <TransitionLink
+          href="/catalog"
+          className="text-neutral-800 dark:text-neutral-200"
+        >
+          <UnderlineLink>Catalog</UnderlineLink>
+        </TransitionLink>{" "}
+        is for, and it's my personal organic archive of beautiful, odd, and
+        stuff I term to be "meaningful". It's also where I keep the things that
+        taught me something, even if I can't always articulate what that
+        something is. You'd probably learn more about how my mind works by
+        browsing through it than by reading this monologue.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        So if you’ve landed here, maybe you’re wired a little like me too, and
+        So if you've landed here, maybe you're wired a little like me too, and
         you can relate to building large stuff with mini, intentional and
-        incremental steps, or you also get excited by questions that don’t have
-        clean answers.
+        incremental steps, or you also probably get excited by questions that
+        don't have clean and linear answers.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
-        If any of that resonates with you, I’m glad you’re here.
+        If any of that resonates with you, I'm glad you're here.
       </p>
       <p className={getParagraphClass({ responsive: true, muted: true })}>
         Thanks for stopping by.
@@ -299,7 +308,7 @@ export default function AboutPage() {
             transformOrigin: "left center",
           }}
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 51 41" // keep your original dimensions here
+          viewBox="0 0 51 41"
         >
           <path
             d="M47.8438 27.4375C48.0521 27.4375 48.3125 27.4375 48.625 27.4375C48.9583 27.4375 49.2812 27.4688 49.5938 27.5312C49.9062 27.5938 50.1771 27.6979 50.4062 27.8438C50.6354 27.9896 50.75 28.2188 50.75 28.5312C50.75 28.9896 50.625 29.3542 50.375 29.625C50.125 29.8958 49.7708 30.0312 49.3125 30.0312C49.25 30.0312 49.1354 30.0312 48.9688 30.0312C48.8229 30.0312 48.6667 30.0208 48.5 30C48.3333 29.9583 48.1771 29.9062 48.0312 29.8438C47.9062 29.7812 47.8438 29.6979 47.8438 29.5938V27.4375Z"

@@ -1,4 +1,5 @@
-import PictureCard from "@/app/components/ui/picturecard";
+import { catalogImages } from "@/lib/catalogimages";
+import { CatalogParallaxGallery } from "@/app/components/ParallaxGallery";
 import {
   getHeadingClass,
   getParagraphClass,
@@ -7,8 +8,6 @@ import {
   getPageAllowanceClass,
   getAllowanceClass,
 } from "@/utils/typography";
-import Link from "next/link";
-import WordPill from "@/app/components/ui/wordpill";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -116,71 +115,16 @@ export const metadata: Metadata = {
 
 export default function CatalogPage() {
   return (
-    <section
-      className={getSectionClass({
-        includeMarginTop: false,
-        includeMarginBottom: true,
-      })}
-    >
-      <div className={getPageAllowanceClass({ axis: "py" })}></div>
-      <p className={getParagraphClass({ responsive: true, muted: true })}>
-        Here are some of the stuff I’ve meticulously collected over the years.
-      </p>
-      <div className={getAllowanceClass({ axis: "py" })}></div>
-      <p className={getParagraphClass({ responsive: true, muted: false })}>
-        Threaded Statements
-      </p>
-      <div className="flex flex-col gap-4">
-        <PictureCard
-          imageSrc="/images/catalog/cover/IMG_7573.JPG"
-          category="Cover"
-          title="Aimé Leon Dore"
-          author="Second Spring/Summer"
-          year="2024"
-        />
-      </div>
-      <div className={getAllowanceClass({ axis: "py" })}></div>
-      <p className={getParagraphClass({ responsive: true, muted: false })}>
-        Brutalist Architecture
-      </p>
-      <div className="flex flex-col gap-4">
-        <PictureCard
-          imageSrc="/images/catalog/cover/IMG_7574.JPG"
-          category="Cover"
-          title="Angles"
-          author="Justina Šeibokas"
-          year="1979"
-        />
-      </div>
-      <div className={getAllowanceClass({ axis: "py" })}></div>
-      <p className={getParagraphClass({ responsive: true, muted: false })}>
-        Chromatic Silence
-      </p>
-      <div className="flex flex-col gap-4">
-        <PictureCard
-          imageSrc="/images/catalog/cover/John_Martin_Le_Pandemonium_Louvre.JPG"
-          category="Cover"
-          title="Chromatic Silence"
-          author="John Martin"
-          year="1840"
-        />
-      </div>
-      <div className={getAllowanceClass({ axis: "py" })}></div>
-      <p className={getParagraphClass({ responsive: true, muted: false })}>
-        The Cosmos
-      </p>
-      <div className="flex flex-col gap-4">
-        <PictureCard
-          imageSrc="/images/catalog/cover/IMG_7574.JPG"
-          category="Cover"
-          title="Angles"
-          author="Justina Šeibokas"
-          year="1979"
-        />
-      </div>
-      <div className={getAllowanceClass({ axis: "py" })}></div>
-
-      <div className={getAllowanceClass({ axis: "py" })}></div>
-    </section>
+    <>
+      <section
+        className={getSectionClass({
+          includeMarginTop: false,
+          includeMarginBottom: true,
+        })}
+      >
+        <div className={getPageAllowanceClass({ axis: "py" })}></div>
+        <CatalogParallaxGallery images={catalogImages} />
+      </section>
+    </>
   );
 }

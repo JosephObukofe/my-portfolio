@@ -13,7 +13,7 @@ const recap: RecapModule = {
     weekNumber: 24,
     title: "Week 24",
     date: "2025-06-15",
-    description: "Feature Redundancy",
+    description: "Imbalance Learning (cont.)",
     focusAreas: ["ML"],
     status: "Ongoing",
     thumbnail: "/public/images/thumbnails/24.png",
@@ -42,7 +42,7 @@ const recap: RecapModule = {
           week={24}
           date="Jun 9 – Jun 15"
           status="Ongoing"
-          description="Feature Redundancy"
+          description="Imbalance Learning (cont.)"
           focusAreas={["ML"]}
           resources={[
             { label: "...", url: "https://dvc.org/doc" },
