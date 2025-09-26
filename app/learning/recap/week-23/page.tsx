@@ -235,7 +235,7 @@ const recap: RecapModule = {
         </p>
         <div className={getAllowanceClass()}></div>
         <h1 className={getHeadingClass(1, { responsive: true })}>
-          The Four-Faceted Approach
+          The Augmented Four-Faceted Approach
         </h1>
         <p className={getParagraphClass({ responsive: true, muted: false })}>
           By recognizing these multiplicative complexity interactions, we employ
@@ -297,6 +297,258 @@ const recap: RecapModule = {
           would be introduced to our currentfiltered set of calibrated
           classifiers such as the BalancedRandomForest, and the Self-Paced
           Ensemble.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The “augmented” part of the four-fold approach is a double-staged
+          feature engineering step performed before and after SMOTE, with the
+          first part specifically designed to enforce structural integrity, by
+          establishing a statistically stable and information-rich feature space
+          before SMOTE and classifier training, and then the latter part
+          designed to optimize the calibrated classifier’s learning dynamics,
+          given a synthetic diversity that now includes the original
+          discriminative signals and oversampled minority patterns.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Basically, given the feature space before SMOTE, I want to ensure that
+          it’s a leveled playing field and is at least, statistically coherent,
+          by removing multicollinearity, reducing variance inflation, filtering
+          out low-information variables, and ensuring feature independence, so
+          SMOTE can operate in a much meaningful space. Plus, I also want to
+          prevent cases where SMOTE inflates the underlying structural
+          deficiencies in the data, by interpolating along redundant dimensions,
+          making it significantly harder for the experimental classifiers to
+          learn the true signals, which is already heavily obscured by noisy
+          ones.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          The latter part on the other hand, is less about what features exist
+          (and how they are represented) and more about how the classifiers
+          interprets them, so once oversampling has been performed and synthetic
+          instances have been introduced (from the real ones), feature
+          re-weighting strategies (like ElasticNet regularization and
+          per-classifier feature fraction tuning) would be implemented to allow
+          the model to downplay redundant signals that could distort the
+          decision boundaries, while amplifying genuinely discriminative ones,
+          so basically performing an in-learning feature selection.
+        </p>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Given the case of the initial model-agnostic feature engineering
+          stage, we’d implement a very specific and step-dependent order of
+          duplicates removal, multicollinearity control, information screening
+          and then distribution normalization.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Duplicate Removal
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Here, we want to remove exact and near-exact feature duplicates to
+          reduce dimensional redundancy. In the case of exact (1:1) duplicates,
+          we’d perform a pairwise equality check across all feature columns,
+          given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"f_i = f_j \\quad \\forall (i, j) \\in \\{1, 2, \\dots, d\\}"}
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          So if two features are identical across all samples, one of them is
+          removed. For the case of near-exact duplicates (otherwise referred to
+          as reconstructable features), we’d implement a more nuanced approach
+          of fitting a simple linear regression for each feature f_j against all
+          other features f_i, given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"f_j = \\beta_0 + \\sum_{i \\neq j} \\beta_i f_i + \\epsilon"}
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          We fit a simple linear regression to the features of context and
+          comparison and then determine the goodness of fit (R^2), also known as
+          the proportion of variance, given as
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "R^2(f_i | F \\setminus f_i) = 1 - \\frac{\\sum_{k=1}^n (f_i^{(k)} - \\hat{f}i^{(k)})^2}{\\sum_{k=1}^n (f_i^{(k)} - \\bar{f}_i)^2}"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where F is the full feature set, F \\setminus f_i denotes all features
+          except f_i, <InlineMath math={"f_i^{(k)}"} /> is the actual value of
+          feature f_i for sample k, <InlineMath math={"\\hat{f}_i^{(k)}"} /> is
+          the predicted value of f_i from the regression, and{" "}
+          <InlineMath math={"\\bar{f}_i"} /> is the mean of f_i. The goodness of
+          fit in this case serves as a metric in explaining how well a given
+          feature is deterministically identical (and reconstructable) from
+          another feature. The answer is “extremely well” if the goodness of fit
+          is closer to 1 (specially
+          <InlineMath math={"R^2 > 0.95"} /> in our case), and it further
+          denotes that the said feature is redundant and should be pruned.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Multicollinearity Control
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Given that we’ve mitigated the feature value redundancy issue, now we
+          want to reduce feature information redundancy, which is a byproduct of
+          highly correlated features, and this is done by implementing a
+          pairwise correlation filtering + VIF thresholding process. The
+          pairwise (Pearson’s) correlation is a bivariate measure that
+          quantifies the linear association between two individual features (f_i
+          and f_j in this case), given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "\\rho(f_i, f_j) = \\frac{\\text{Cov}(f_i, f_j)}{\\sigma_{f_i} \\sigma_{f_j}}"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          What it tells us in essence is how much information one feature tells
+          about another (a pairwise comparison), and from a linear perspective,
+          a <InlineMath math={"|\\rho(f_i, f_j)| > 0.9"} /> indicates a strong
+          linear relationship, further denoting that one of them is redundant
+          and should be pruned. The VIF (Variance Inflation Factor) on the other
+          hand is a multivariate measure, and it measures how much the variance
+          of a regression coefficient is inflated due to the joint collinearity
+          of all other combined features, and it is mathematically explained by:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "\\text{VIF}(f_i) = \\frac{1}{1 - R^2(f_i | F \\setminus f_i)}"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where R^2(f_i | F \setminus f_i) is the R^2 from regressing feature
+          f_j on all other features. In this case, features with{" "}
+          <InlineMath math={"\\text{VIF} > 10"} /> are iteratively removed, as
+          they indicate that they are highly linearly dependent on each other.
+          After identifying features that fall into the “worst offenders”
+          brackets, we take the intersection, and from a theoretical standpoint,
+          they are purely noise contributors, and should be avidly removed.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Information Screening
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          After pruning off redundant features, we now want to focus on the ones
+          that are most informative, and we progress with the philosophy that
+          not all features are equally informative, with some more informative
+          than the others (even though they may seem statistically distinct from
+          each other). To this effect, we’d conduct a univariate feature
+          screening test using mutual information. Mutual information measures
+          how much knowing one variable reduces uncertainty (by information
+          gain) about another, and in this case, it is how much information f_i
+          provides about the target y, given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "I(f_i; y) = sum_{f_i} sum_{y} p(f_i, y) log \frac{p(f_i, y)}{p(f_i) , p(y)}"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where p(f_i, y) is the joint probability distribution of feature f_i
+          and target y, p(f_i) is the marginal probability of f_i, p(y) is the
+          marginal probability of y, and the summation computes how different
+          the joint distribution p(f_i, y) is from what it would be if f_i and y
+          were independent. The main intuition is, if knowing f_i tells you
+          nothing about y \rightarrow I(f_i; y) = 0, then it denotes that the
+          said feature is irrelevant, otherwise if it reduces uncertainty about{" "}
+          <InlineMath math="y" />{" "}
+          <InlineMath math="\rightarrow I(f_i; y) > 0" /> then it is
+          informative.
+        </p>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Variance Thresholding
+        </h3>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          This keeps the classifiers from wasting learning capacity on features
+          that don’t “move”, and by movement, it denotes change across samples.
+          It works with the underlying principle that “unmovable” features
+          cannot help with class discrimination, and these unmovable features
+          are highlighted by their characteristic of near-zero variance (which
+          is more or less a constant), as they don’t help to split the feature
+          space, neither do they shift decision boundaries, and keeping these
+          guys could potentially inflate the dimensionality and further slow
+          down convergence. Given that{" "}
+          <InlineMath math="f_i = \\{f_{i1}, f_{i2}, \\dots, f_{in}\\}" /> and
+          they denote the values of feature i across n samples, then the
+          variance of f_i is defined as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "\\tilde{\\sigma}^2(f_i) = \\frac{1}{n} \\sum_{k=1}^{n} (f_{ik} - \\bar{f_i})^2"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where <InlineMath math="f_{ik}" /> is the value of feature i in the
+          k-th sample. This essentially explains how much f_i deviates from its
+          mean across all samples, so if{" "}
+          <InlineMath math="\\tilde{\\sigma}^2(f_i) \approx 0" /> then the
+          feature barely changes. To define a threshold, we’d implement a
+          range-normalized per-feature approach where we explicitly define the
+          new variance but with respect with the feature’s effective range. This
+          is due to the fact that some features naturally have a larger numeric
+          range than others, and forcing a unit variance measure for each
+          feature without regards for the range could actually obscure the
+          signal we’re aiming to pick up. To do this, we define the
+          range-normalized variance as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={
+              "\\tilde{\\sigma}^2(f_i)^* = \\frac{\\tilde{\\sigma}^2(f_i)}{(\\max(f_i) - \\min(f_i))^2}"
+            }
+          />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          We then establish a new feature selection condition as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath math={"\\tilde{\\sigma}^2(f_i) ^* \\geq t"} />
+        </div>
+        <p className={getParagraphClass({ responsive: true, muted: false })}>
+          Where t is the temperature parameter and essentially our threshold
+          value per feature. So if a feature’s normalized variance is lower than
+          t, then it is too flat and not informative enough, otherwise it has
+          enough spread and is potentially useful. In choosing a suitable value
+          for t, we’d implement a percentile-based approach, where we compute
+          the distribution of all <InlineMath math="\\tilde{\\sigma}^2(f_i)" />{" "}
+          values and drop those below the 10th percentile, given as:
+        </p>
+        <div className={getMathBlockClass()}>
+          <BlockMath
+            math={"t = P_{10}\\left(\\tilde{\\sigma}^2(f_i)^*\\right)"}
+          />
+        </div>
+        <div className={getAllowanceClass()}></div>
+        <h3 className={getHeadingClass(3, { responsive: true })}>
+          Distribution Normalization
+        </h3>
+        <p>
+          Here, we want to normalize the shape of the distribution, that is,
+          power-transform f_i into a more symmetric, bell-shaped distribution
+          (to be more Gaussian-like). This is due the fact that most of our
+          experimental classifiers assume Gaussian-like inputs, and
+          distance-based steps like SMOTE in our case can be heavily affected by
+          skew and distortion (basically distorting the Euclidean distances). To
+          this effect, we’d implement a direction-invariant power transform to
+          cater for both left or right skewness, in this case, the Yeo-Johnson
+          transformation.
         </p>
         <div className={getAllowanceClass()}></div>
         <h1 className={getHeadingClass(1, { responsive: true })}>
